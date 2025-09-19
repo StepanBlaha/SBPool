@@ -27,6 +27,7 @@ const Home = () => {
         });
         const thickness = 40;
         const halfT = thickness / 2;
+        const cw = 40;
 
 
         // Walls aligned to the element edges
@@ -34,38 +35,67 @@ const Home = () => {
         // Top Wall
         const top_left = Bodies.rectangle(w / 4 + 20, halfT, w / 2 - 80, thickness, {
             isStatic: true,
-            chamfer: { radius: 20 },
+            chamfer: { radius: [0, 0, 16, 16] },
             render: { fillStyle: "#e8e8e8", strokeStyle: "#222", lineWidth: 2 },
         });
         const top_right = Bodies.rectangle((w / 4) * 3 - 20, halfT, (w / 2) - 80, thickness, {
             isStatic: true,
-            chamfer: { radius: 20 },
+            chamfer: { radius: [0, 0, 16, 16] },
             render: { fillStyle: "#e8e8e8", strokeStyle: "#222", lineWidth: 2 },
         });
 
         // Bottom Wall
         const bottom_left = Bodies.rectangle((w / 4) + 20, h - halfT, w / 2 - 80, thickness, {
             isStatic: true,
-            chamfer: { radius: 20 },
+            chamfer: { radius: [16, 16, 0, 0] },
             render: { fillStyle: "#e8e8e8", strokeStyle: "#222", lineWidth: 2 },
         });
         const bottom_right = Bodies.rectangle(((w / 4) * 3) - 20, h - halfT, w / 2 - 80, thickness, {
             isStatic: true,
-            chamfer: { radius: 20 },
+            chamfer: { radius: [16, 16, 0, 0] },
             render: { fillStyle: "#e8e8e8", strokeStyle: "#222", lineWidth: 2 },
         });
 
         // Side Walls
         const left = Bodies.rectangle(halfT, (h / 2) - 0, thickness, (h - thickness * 2) - 40, {
             isStatic: true,
-            chamfer: { radius: 20 },
+            chamfer: { radius: [0, 16, 16, 0] },
             render: { fillStyle: "#e8e8e8", strokeStyle: "#222", lineWidth: 2 },
         });
         const right = Bodies.rectangle(w - halfT, (h / 2) - 0, thickness, (h - thickness * 2) - 40, {
             isStatic: true,
-            chamfer: { radius: 20 },
+            chamfer: { radius: [16, 0, 0, 16] },
         render: { fillStyle: "#e8e8e8", strokeStyle: "#222", lineWidth: 2 },
         });
+
+        // Holes
+        const top_left_hole = Bodies.circle(cw / 2, cw / 2, 40, {
+            isStatic: true,
+            render: { fillStyle: "#3f3737ff", strokeStyle: "#222", lineWidth: 2 },
+        })
+        const top_center_hole = Bodies.circle(w / 2, cw / 2 - 30, 40, {
+            isStatic: true,
+            render: { fillStyle: "#3f3737ff", strokeStyle: "#222", lineWidth: 2 },
+        })
+        const top_right_hole = Bodies.circle(w - (cw / 2), cw / 2, 40, {
+            isStatic: true,
+            render: { fillStyle: "#3f3737ff", strokeStyle: "#222", lineWidth: 2 },
+        })
+
+        const bottom_left_hole = Bodies.circle(cw / 2, h - (cw / 2), 40, {
+            isStatic: true,
+            render: { fillStyle: "#3f3737ff", strokeStyle: "#222", lineWidth: 2 },
+        })
+        const bottom_center_hole = Bodies.circle(w / 2, h - (cw / 2) + 30, 40, {
+            isStatic: true,
+            render: { fillStyle: "#3f3737ff", strokeStyle: "#222", lineWidth: 2 },
+        })
+        const bottom_right_hole = Bodies.circle(w - (cw / 2), h - (cw / 2), 40, {
+            isStatic: true,
+            render: { fillStyle: "#3f3737ff", strokeStyle: "#222", lineWidth: 2 },
+        })
+
+
 
         // Boxes spawned inside the container
         const boxA = Bodies.rectangle(w / 2 - 60, h / 2 - 100, 80, 80, {
@@ -75,7 +105,22 @@ const Home = () => {
         render: { fillStyle: "#c25216ff", strokeStyle: "#222", lineWidth: 2 },
         });
         // Add to the scene
-        Composite.add(engine.world, [top_left, top_right, bottom_left, bottom_right, left, right, boxA, boxB]);
+        Composite.add(engine.world, [
+            top_left,
+            top_right,
+            bottom_left,
+            bottom_right,
+            left,
+            right,
+            top_left_hole,
+            top_center_hole,
+            top_right_hole,
+            bottom_left_hole,
+            bottom_center_hole,
+            bottom_right_hole,
+            boxA,
+            boxB
+        ]);
 
         // run
         const runner = Runner.create();
