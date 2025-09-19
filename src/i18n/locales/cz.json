@@ -1,0 +1,428 @@
+{
+    "main":{
+        "title": "SBSORT - Kde Algoritmy Ožívají",
+        "subtitle": "Dynamické vizualizace, které mění způsob, jak se učíme algoritmy řazení. Prozkoumejte více než 12 algoritmů prostřednictvím interaktivních animací, porovnejte jejich výkon na různých datech a získejte praktické znalosti, které můžete ihned aplikovat ve svých projektech.",
+        "sorts_title": "Algoritmy Řazení",
+        "visualize_button": "Zkuste Vizualizátor",
+        "learn_button": "Zjistit Více",
+        "sorts":{
+            "bubble": "Bubble Sort",
+            "merge": "Merge Sort",
+            "selection": "Selection Sort",
+            "quick": "Quick Sort",
+            "insertion": "Insertion Sort",
+            "heap": "Heap Sort",
+            "counting": "Counting Sort"
+        },
+        "sort_desc": {
+            "bubble": "Sledujte, jak si dvojice sloupců vyměňují místa, dokud vše nevyplave na své místo.",
+            "insertion": "Vkládejte každý prvek na jeho místo, jako byste skládali puzzle.",
+            "selection": "Vyberte nejmenší, umístěte ho na správné místo a rituál opakujte.",
+            "merge": "Rozdělte pole, ovládněte menší části a pak je bezchybně spojte.",
+            "quick": "Zvolte pivot, rozdělte pole a seřaďte obě strany rychle.",
+            "heap": "Použijte binární haldu k opakovanému výběru dalšího prvku ve správném pořadí.",
+            "counting": "Spočítejte výskyty každé hodnoty a umístěte je podle kumulativních součtů."
+        }
+    },"buttons":{
+        "play": "Start"
+    },
+    "about":{
+        "badge": "O SBSORT -- Vizualizér řazení",
+        "title": "Vytváříme algoritmy řazení ",
+        "title_highlight": "kliknutím.",
+        "subtitle": "SBSORT proměňuje učebnicové algoritmy ve vizuální animace krok za krokem. Prozkoumejte různé strategie, porovnejte jejich kompromisy a budujte intuici pozorováním, jak řadí stejné pole vedle sebe.",
+        "concepts":{
+            "title":"Koncepty, které můžete vidět",
+            "subtitle": "Animace odhalují porovnávání, výměny a rozdělování, takže logika za každým algoritmem se stává zřejmou."
+        },
+        "time":{
+            "title": "Intuice času a prostoru",
+            "subtitle": "Vestavěné poznámky a tabulky složitosti propojují to, co vidíte, s analýzou Big-O a skutečnými omezeními."
+        },
+        "controls":{
+            "title": "Interaktivní ovládání",
+            "subtitle": "Změňte vstupní pole, procházejte snímky nebo upravte rychlost k prozkoumání nejlepších, průměrných a nejhorších případů."
+        },
+        "how":{
+            "title": "Jak SBSORT učí",
+            "1":{
+            "title": "Vyberte algoritmus",
+            "subtitle": "Zvolte Bubble, Insertion, Selection, Merge, Quick, Heap a další — každý se stručným vysvětlením a typickými případy použití."
+            },
+            "2":{
+            "title": "Nastavte svůj experiment",
+            "subtitle": "Zadejte vlastní pole nebo ho randomizujte. Zvolte rychlost vizualizace a zda zvýraznit výměny, pivoty nebo rozdělování."
+            },
+            "3":{
+            "title": "Sledujte, pozastavte, prozkoumejte",
+            "subtitle": "Spusťte animaci, pozastavte v libovolném snímku a přečtěte si boční poznámky, abyste porozuměli přesné operaci v každém kroku."
+            },
+            "4":{
+            "title": "Porovnejte a vyvoďte závěr",
+            "subtitle": "Podívejte se, jak pořadí vstupu a velikost ovlivňují čas běhu. Naučte se, kdy je jednoduchý algoritmus perfektní — a kdy vyhrává rozděl a panuj."
+            }
+        },
+        "why":{
+            "title":"Proč si studenti volí SBSORT",
+            "algorithms":{
+            "title":"12+",
+            "subtitle": "vizualizovaných algoritmů"
+            },
+            "notation":{
+            "title":"Krok za krokem",
+            "subtitle": "vysvětlení s Big-O"
+            },
+            "accessible":{
+            "title":"Přístupné",
+            "subtitle": "přátelské ke klávesnici a čtečkám obrazovky"
+            },
+            "languages":{
+            "title":"Vícejazyčné",
+            "subtitle": "EN / CZ připraveno"
+            }
+        },
+        "who":{
+            "title": "Kdo stojí za projektem",
+            "name":"Štěpán Bláha",
+            "role": "Tvůrce a inženýr — vytváří vizualizace a obsah."
+        },
+        "faq":{
+            "title": "Často kladené otázky",
+            "1":{
+            "title": "Mohu použít SBSORT ve svém kurzu?",
+            "subtitle": "Ano. Je navržen pro učebny a samostudium. Můžete vložit lekce nebo je promítat živě během přednášek."
+            },
+            "2":{
+            "title": "Funguje to na mobilu?",
+            "subtitle": "Absolutně. UI se přizpůsobuje telefonům a tabletům s ovládáním přátelským k dotyku."
+            },
+            "3":{
+            "title": "A co tmavý režim a jazyky?",
+            "subtitle": "Tmavé/světlé téma jsou vestavěné. Angličtina a čeština jsou podporované a další jazyky lze přidat."
+            },
+            "4":{
+            "title": "Je SBSORT open source?",
+            "subtitle": "Jádro vizualizéru může být sdíleno pro vzdělávací použití. Kontaktujte nás ohledně licencování nebo příspěvků."
+            }
+        }
+        },
+    "hero":{
+        
+        "bubble": {
+            "title": "Bubble Sort",
+            "subtitle": "Krok za krokem vizuální vysvětlení Bubble Sortu."
+        },
+        "merge": {
+            "title": "Merge Sort",
+            "subtitle": "Krok za krokem vizuální vysvětlení Merge Sortu."
+        },
+        "Heap": {
+            "title": "Heap Sort",
+            "subtitle": "Krok za krokem vizuální vysvětlení Heap Sortu."
+        },
+        "quick": {
+            "title": "Quick Sort",
+            "subtitle": "Krok za krokem vizuální vysvětlení Quick Sortu."
+        },
+        "selection": {
+            "title": "Selection Sort",
+            "subtitle": "Krok za krokem vizuální vysvětlení Selection Sortu."
+        },
+        "insertion": {
+            "title": "Insertion Sort",
+            "subtitle": "Krok za krokem vizuální vysvětlení Insertion Sortu."
+        },
+        "counting": {
+            "title": "Counting Sort",
+            "subtitle": "Krok za krokem vizuální vysvětlení Counting Sortu."
+        }
+    },
+    "sort_list": {
+        "badge":"Typy Řazení SBSORT -- Vizualizér řazení",
+        "title": "List všech řadících ",
+        "title_highlighted": "algoritmů.",
+        "subtitle":"Kurátorovaný seznam všech našich řadicích algoritmů připravený pro snadnou navigaci. Jednoduše vyberte algoritmus, který se chcete naučit, klikněte na tlačítko pro přesměrování na stránku vizualizéru a začněte se učit.",
+        "algorithms": {
+            "bubble": {
+                "title": "Bubble Sort",
+                "description": "Opakovaně vyměňuje sousední prvky, dokud není seřazené"
+            },
+            "merge": {
+                "title": "Merge Sort", 
+                "description": "Rozdělí pole, seřadí poloviny a sloučí je"
+            },
+            "selection": {
+                "title": "Selection Sort",
+                "description": "Opakovaně vybírá nejmenší prvek a umisťuje ho"
+            },
+            "quick": {
+                "title": "Quick Sort",
+                "description": "Rozdělí pole kolem pivotu a rekurzivně řadí"
+            },
+            "insertion": {
+                "title": "Insertion Sort",
+                "description": "Vytváří seřazený seznam vkládáním prvků jeden po druhém"
+            },
+            "heap": {
+                "title": "Heap Sort",
+                "description": "Používá strukturu haldy k opakované extrakci max/min"
+            },
+            "counting": {
+                "title": "Counting Sort",
+                "description": "Počítá frekvence prvků pro jejich umístění v pořadí"
+            }
+        }
+    },
+    "console": {
+        "input": "Vstupní pole",
+        "reset": "Resetovat",
+        "speed": "Rychlost",
+        "visualization": "Vizualizace",
+        "how": "Jak to funguje",
+        "time": "Časová složitost",
+        "when": "Kdy použít",
+            "complexity_labels": {
+            "best_case": "Nejlepší Případ",
+            "average_case": "Průměrný Případ", 
+            "worst_case": "Nejhorší Případ",
+            "space_complexity": "Prostorová Složitost"
+        },
+        "how_list":{
+            "bubble": {
+                "1": "Porovnejte každý pár sousedních prvků",
+                "2": "Vyměňte je, pokud jsou v nesprávném pořadí",
+                "3": "Po každém průchodu se největší prvek přesune na konec",
+                "4": "Opakujte proces pro zbývající neseřazenou část",
+                "5": "Zastavte, když nejsou potřeba žádné výměny (pole je seřazené)"
+            },
+            "counting": {
+                "1": "Najděte rozsah vstupních hodnot",
+                "2": "Spočítejte výskyty každé hodnoty",
+                "3": "Vypočítejte kumulativní počty pro určení pozic",
+                "4": "Umístěte každý prvek na jeho seřazenou pozici ve výstupním poli"            
+            },
+            "heap": {
+                "1": "Vytvořte maximální haldu z pole",
+                "2": "Vyměňte kořen (maximum) s posledním prvkem",
+                "3": "Zmenšete velikost haldy a obnovte maximální haldu",
+                "4": "Opakujte, dokud nejsou všechny prvky seřazené"            
+            },
+            "insertion": {
+                "1": "Vezměte prvky jeden po druhém z neseřazené části",
+                "2": "Vložte každý na správnou pozici v seřazené části",
+                "3": "Posuňte větší prvky o jeden krok doprava, když je to potřeba"            
+            },
+            "merge": {
+                "1": "Rozdělte pole na dvě poloviny",
+                "2": "Rekurzivně seřaďte každou polovinu",
+                "3": "Sloučte dvě seřazené poloviny do jednoho seřazeného pole"
+            },
+            "quick": {
+                "1": "Vyberte pivot prvek",
+                "2": "Rozdělte pole tak, aby menší prvky šly vlevo, větší vpravo",
+                "3": "Rekurzivně aplikujte proces na levé a pravé části"
+            },
+            "selection": {
+                "1": "Najděte minimální prvek v neseřazené části",
+                "2": "Vyměňte ho s prvním neseřazeným prvkem",
+                "3": "Posuňte hranici seřazené/neseřazené části o jeden krok vpřed",
+                "4": "Opakujte, dokud nejsou všechny prvky seřazené"            
+            }
+        },
+        "time_list": {
+            "bubble": {
+                "best_case": {
+                    "complexity": "O(n)",
+                    "description": "když je pole již seřazené (s optimalizovanou verzí, která se zastaví, pokud nejsou provedeny žádné výměny)"
+                },
+                "average_case": {
+                    "complexity": "O(n²)",
+                    "description": "typický výkon, když jsou prvky v náhodném pořadí"
+                },
+                "worst_case": {
+                    "complexity": "O(n²)",
+                    "description": "když je pole seřazené v opačném pořadí"
+                },
+                "space_complexity": {
+                    "complexity": "O(1)",
+                    "description": "protože řadí na místě"
+                }
+            },
+            "merge": {
+                "best_case": {
+                    "complexity": "O(n log n)",
+                    "description": "konzistentní výkon bez ohledu na pořadí vstupu"
+                },
+                "average_case": {
+                    "complexity": "O(n log n)",
+                    "description": "spolehlivý přístup rozděl a panuj"
+                },
+                "worst_case": {
+                    "complexity": "O(n log n)",
+                    "description": "garantovaný výkon i s nejhorším vstupem"
+                },
+                "space_complexity": {
+                    "complexity": "O(n)",
+                    "description": "vyžaduje dodatečnou paměť pro dočasná pole během slučování"
+                }
+            },
+            "selection": {
+                "best_case": {
+                    "complexity": "O(n²)",
+                    "description": "vždy musí najít minimum ve zbývajícím poli"
+                },
+                "average_case": {
+                    "complexity": "O(n²)",
+                    "description": "konstantní počet porovnání bez ohledu na vstup"
+                },
+                "worst_case": {
+                    "complexity": "O(n²)",
+                    "description": "žádný rozdíl na základě uspořádání vstupních dat"
+                },
+                "space_complexity": {
+                    "complexity": "O(1)",
+                    "description": "řadí na místě pouze s několika proměnnými"
+                }
+            },
+            "quick": {
+                "best_case": {
+                    "complexity": "O(n log n)",
+                    "description": "když pivot rozdělí pole na stejné poloviny"
+                },
+                "average_case": {
+                    "complexity": "O(n log n)",
+                    "description": "s náhodným nebo median-of-three výběrem pivotu"
+                },
+                "worst_case": {
+                    "complexity": "O(n²)",
+                    "description": "když je pivot vždy nejmenší nebo největší prvek"
+                },
+                "space_complexity": {
+                    "complexity": "O(log n)",
+                    "description": "pro rekurzivní volání funkcí na zásobníku"
+                }
+            },
+            "insertion": {
+                "best_case": {
+                    "complexity": "O(n)",
+                    "description": "když je pole již seřazené"
+                },
+                "average_case": {
+                    "complexity": "O(n²)",
+                    "description": "když jsou prvky v náhodném pořadí"
+                },
+                "worst_case": {
+                    "complexity": "O(n²)",
+                    "description": "když je pole seřazené v opačném pořadí"
+                },
+                "space_complexity": {
+                    "complexity": "O(1)",
+                    "description": "řadí na místě pouze s konstantním množstvím extra prostoru"
+                }
+            },
+            "heap": {
+                "best_case": {
+                    "complexity": "O(n log n)",
+                    "description": "vytvoření haldy trvá O(n), extrakce všech prvků trvá O(n log n)"
+                },
+                "average_case": {
+                    "complexity": "O(n log n)",
+                    "description": "konzistentní výkon napříč různými vstupy"
+                },
+                "worst_case": {
+                    "complexity": "O(n log n)",
+                    "description": "garantovaný výkon bez ohledu na uspořádání vstupu"
+                },
+                "space_complexity": {
+                    "complexity": "O(1)",
+                    "description": "řadí na místě pomocí vstupního pole jako haldy"
+                }
+            },
+            "counting": {
+                "best_case": {
+                    "complexity": "O(n + k)",
+                    "description": "kde k je rozsah vstupních hodnot"
+                },
+                "average_case": {
+                    "complexity": "O(n + k)",
+                    "description": "lineární časová složitost nezávislá na pořadí vstupu"
+                },
+                "worst_case": {
+                    "complexity": "O(n + k)",
+                    "description": "stále lineární i s nejhorším vstupem"
+                },
+                "space_complexity": {
+                    "complexity": "O(k)",
+                    "description": "vyžaduje dodatečné pole pro počítání výskytů"
+                }
+            }
+        },
+        "when_list":{
+            "bubble": {
+                "1": "Při výuce nebo učení základů řazení (snadné na pochopení)",
+                "2": "Pro velmi malá pole, kde je jednoduchost důležitější než efektivita",
+                "3": "Když je pole téměř seřazené a je potřeba jen několik výměn",
+                "4": "Užitečné pro demonstraci konceptů algoritmů (výměny, porovnání, průchody)"
+            },
+            "counting": {
+                "1": "Při řazení celých čísel nebo diskrétních hodnot",
+                "2": "Když rozsah čísel (k) není mnohem větší než počet prvků (n)",
+                "3": "Pro stabilní a lineární řazení dat s malým rozsahem"
+            },
+            "heap": {
+                "1": "Když je vyžadováno O(n log n) v nejhorším případě",
+                "2": "Když je potřeba řazení na místě",
+                "3": "Dobré pro systémy s omezenou pamětí"
+            },
+            "insertion": {
+                "1": "Pro malé datové sady",
+                "2": "Když jsou data téměř seřazená",
+                "3": "Jako stavební blok pro pokročilejší algoritmy"
+            },
+            "merge": {
+                "1": "Pro velké datové sady",
+                "2": "Když je důležitá stabilita (zachování pořadí stejných prvků)",
+                "3": "Když je vyžadováno garantované O(n log n)"
+            },
+            "quick": {
+                "1": "Pro velké datové sady",
+                "2": "Když záleží na průměrném výkonu",
+                "3": "Když je preferováno řazení na místě"
+            },
+            "selection": {
+                "1": "Když jsou zápisy do paměti nákladné (málo výměn)",
+                "2": "Pro velmi malé datové sady",
+                "3": "Pro vzdělávací účely"
+            }
+        }
+    },
+    "alert":{
+        "success": {
+            "title": "Úspěch",
+            "text": "Text byl úspěšně zkopírován do schránky."
+        },
+        "error": {
+            "title": "Chyba",
+            "text": "Omlouváme se, něco se pokazilo, zkuste to prosím znovu."
+        }
+    },
+    "footer":{
+        "stack":{
+            "framework": "Vytvořeno s",
+            "styles": "Stylováno s",
+            "deploy": "Nasazeno na"
+        },
+        "right": "Všechna práva vyhrazena.",
+        "message": "Vytvořeno a navrženo s"
+    },
+    "navbar":{
+        "sections":{
+            "home": "Domů",
+            "about": "O nás",
+            "list": "Typy Řazení",
+            "projects": "PROJEKTY",
+            "contacts": "KONTAKTY"
+        },
+        "language": "Změnit Jazyk"
+    }
+}
