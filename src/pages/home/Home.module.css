@@ -26,11 +26,11 @@
     align-items: center;
 }
 .Table{
-    width: min(90%, 900px);   /* cap max size but stay responsive */
+    width: min(100%, 1200px);   /* cap max size but stay responsive */
     aspect-ratio: 103 / 59;    /* outer table ratio (with borders) */
     position: relative;
     background: #0b5;          /* demo: felt color */
-    border: 24px solid #2b2b2b;/* demo: rails/border thickness */
+    border: 10px solid #2b2b2b;/* demo: rails/border thickness */
     border-radius: 12px;
     overflow: hidden;
 }
