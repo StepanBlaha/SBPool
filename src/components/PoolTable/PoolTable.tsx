@@ -1,5 +1,6 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {Engine, Render, Runner, Composite, Bodies, Body, Events, Vector, Mouse, MouseConstraint} from 'matter-js';
+import Ball0 from '../../assets/balls/0.png';
 import Ball1  from '../../assets/balls/1.png';
 import Ball2  from '../../assets/balls/2.png';
 import Ball3  from '../../assets/balls/3.png';
@@ -15,7 +16,6 @@ import Ball12 from '../../assets/balls/12.png';
 import Ball13 from '../../assets/balls/13.png';
 import Ball14 from '../../assets/balls/14.png';
 import Ball15 from '../../assets/balls/15.png';
-import Ball16 from '../../assets/balls/16.png';
 import styles from "./PoolTable.module.css"
 /*
 Notes
@@ -51,79 +51,151 @@ ctx.restore() - restores the state so the fill color doesnt affect later drawing
 
 // Set physical variable
 
-// Table dimensions
-const WIDTH =  Math.min(1100, Math.floor(window.innerWidth * 0.95))
-const HEIGHT = Math.round(WIDTH * (500/900))
-const TABLE_INSET = 36
-const POCKET_R = 22
-const BALL_R = 10.5
-// texture size and scale
-const SPRITE_PX = 256;
-const SCALE = (BALL_R * 2) / SPRITE_PX; 
+// Aspect used to compute sizes
+const ASPECT_W = 900;
+const ASPECT_H = 500;
+const MAX_LOGICAL_W = 1100;
 
+// viewport padding so it doesn’t touch edges
+const VPAD_X = 16;
+const VPAD_Y = 16;
 
-// Maximal pull force
-const MAX_PULL = 140
-const MIN_SHOT_SPEED = 0.05
-// Air friction
-const FRICTION_AIR = 0.012
-// Ball bounciness and friction
-const BALL_RESTITUTION = 0.96
-const BALL_FRICTION = 0.01
-// Border bounciness
-const CUSHION_RESTITUTION = 0.9 
-// colors
-const felt = '#157a3d'
-const cushion = '#0b3f21'
-const pocketCol = '#111'
+// Physics tuning (dimensionless)
+const MAX_PULL = 140;
+const MIN_SHOT_SPEED = 0.05;
+const FRICTION_AIR = 0.012;
+const BALL_RESTITUTION = 0.96;
+const BALL_FRICTION = 0.01;
+const CUSHION_RESTITUTION = 0.9;
+
+// Colors
+const felt = '#157a3d';
+const cushion = '#0b3f21';
+const pocketCol = '#111';
 
 // Ball sprites
-const BallSpriteMap = [
-    Ball1, Ball2, Ball3, Ball4,
-    Ball5, Ball6, Ball7, Ball8,
-    Ball9, Ball10, Ball11, Ball12,
-    Ball13, Ball14, Ball15, Ball16,
-] 
+const SPRITES: (string | undefined)[] = [
+    Ball0,  // 0 = cue
+    Ball1,  // 1
+    Ball2,  // 2
+    Ball3,  // 3
+    Ball4,  // 4
+    Ball5,  // 5
+    Ball6,  // 6
+    Ball7,  // 7
+    Ball8,  // 8
+    Ball9,  // 9
+    Ball10, // 10
+    Ball11, // 11
+    Ball12, // 12
+    Ball13, // 13
+    Ball14, // 14
+    Ball15  // 15
+];
 
-// Pockets dimensions
-function pocketCenters() {
-    const left = TABLE_INSET;
-    const right = WIDTH - TABLE_INSET;
-    const top = TABLE_INSET;
-    const bottom = HEIGHT - TABLE_INSET;
-    return {
-        tl: { x: left, y: top }, 
-        tm: { x: WIDTH/2, y: top }, 
-        tr: { x: right, y: top },
-        bl: { x: left, y: bottom },
-        bm: { x: WIDTH/2, y: bottom }, 
-        br: { x: right, y: bottom }
-    }
-}
-
-// Colors for the balls
+// Ball rim colors (optional)
 const poolColors = [
     '#ffd54f','#ef5350','#42a5f5','#ab47bc','#66bb6a','#ffa726','#26c6da','#8d6e63',
     '#ffd54f','#ef5350','#42a5f5','#ab47bc','#66bb6a','#ffa726','#26c6da'
-]
+];
 
-
+interface PoolTableProps {
+    setScoredBalls: React.Dispatch<React.SetStateAction<number[]>>;
+    setStrokes: React.Dispatch<React.SetStateAction<number>>
+}
 // Table
-export default function PoolTable() {
+export default function PoolTable({setScoredBalls, setStrokes}: PoolTableProps) {
+
+    // Calculate size
+    function computeSize(rotated: boolean) {
+        const vw = window.innerWidth - VPAD_X * 2;
+        const vh = window.innerHeight - VPAD_Y * 2;
+
+        // natural logical size
+        let W0 = Math.min(MAX_LOGICAL_W, Math.floor(vw * 0.95));
+        let H0 = Math.round(W0 * (ASPECT_H / ASPECT_W));
+
+        // visual box we must fit into the viewport
+        // when rotated 90°, visual width = H0 and visual height = W0
+        const visW = rotated ? H0 : W0;
+        const visH = rotated ? W0 : H0;
+
+        const scale = Math.min(vw / visW, vh / visH, 1);
+
+        // final logical canvas size (we rebuild world to these)
+        const width = Math.round(W0 * scale);
+        const height = Math.round(H0 * scale);
+
+        return { width, height };
+    }
+
+    const [rotated, setRotated] = useState<boolean>(window.innerWidth < 1400);
+    const [size, setSize] = useState(() => computeSize(rotated));
+    const rotatedRef = useRef(rotated);
+    useEffect(() => { rotatedRef.current = rotated; }, [rotated]);
+
+    // respond to window resize + media query
+    useEffect(() => {
+        const mq = window.matchMedia('(max-width: 1400px)');
+        const onChange = () => {
+            const r = mq.matches;
+            setRotated(r);
+            setSize(computeSize(r));
+        };
+        mq.addEventListener('change', onChange);
+
+        const onResize = () => setSize(computeSize(rotatedRef.current));
+        window.addEventListener('resize', onResize);
+
+        return () => {
+            mq.removeEventListener('change', onChange);
+            window.removeEventListener('resize', onResize);
+        };
+    }, []);
+
+
     // Table ref
     const hostRef = useRef<HTMLDivElement>(null)
-    // Overlay for hud
-    const overlayRef = useRef<HTMLDivElement>(null)
+
+    // Pocket centers helper (parametric)
+    function pocketCenters(W: number, H: number, TABLE_INSET: number) {
+        const left = TABLE_INSET;
+        const right = W - TABLE_INSET;
+        const top = TABLE_INSET;
+        const bottom = H - TABLE_INSET;
+        return {
+            tl: { x: left, y: top },
+            tm: { x: W / 2, y: top },
+            tr: { x: right, y: top },
+            bl: { x: left, y: bottom },
+            bm: { x: W / 2, y: bottom },
+            br: { x: right, y: bottom }
+        };
+    }
 
     useEffect(() => {
         // Return on no table
         if (!hostRef.current) return;
+        // Current logical canvas size
+        const WIDTH = size.width;
+        const HEIGHT = size.height;
+
+        // Scale geometry from a 900x500 logical design space
+        const S = WIDTH / ASPECT_W;
+        const TABLE_INSET = 36 * S;
+        const POCKET_R = 22 * S;
+        const BALL_R = 10.5 * S;
+
+        // Sprite scale (textures are 256px)
+        const SPRITE_PX = 256;
+        const SCALE = (BALL_R * 2) / SPRITE_PX;
         // Get the hud power bar - outside of this elemend
         const powerBar = document.getElementById('powerBar') as HTMLDivElement
+        /*
         // Display fps
         const fpsDisplay = document.createElement('div')
         fpsDisplay.id = 'fps'
-
+        */
         // Engine & render
         const engine = Engine.create()
         engine.world.gravity.y = 0 // Unset gravity
@@ -136,14 +208,14 @@ export default function PoolTable() {
                 height: HEIGHT, 
                 wireframes: false,
                 background: felt, 
-                pixelRatio: window.devicePixelRatio
+                pixelRatio: 1
             }
         })
         Render.run(render);
         // Starts the game loop
         const runner = Runner.create();
         Runner.run(runner, engine);
-
+        /*
         // Create overlay and add to scene (Contains fps and such)
         const overlay = document.createElement('div')
         overlay.id = 'overlay'
@@ -151,6 +223,7 @@ export default function PoolTable() {
         overlay.style.height = `${HEIGHT}px`
         overlay.appendChild(fpsDisplay)
         hostRef.current.appendChild(overlay)
+        */
 
         // Bounds helpers - Physical borders for the table
         const bounds = { 
@@ -162,20 +235,18 @@ export default function PoolTable() {
 
         // Add cushions between the pockets
         const addCushions = () => {
-            const table = TABLE_INSET * 0.6
-            // Config the options
-            const options = { isStatic: true, restitution: CUSHION_RESTITUTION, render: { fillStyle: cushion } }
-            // Get the pocket centers
-            const pockets = pocketCenters();
+            const table = TABLE_INSET * 0.6;
+            const options = { isStatic: true, restitution: CUSHION_RESTITUTION, render: { fillStyle: cushion } };
+            const pockets = pocketCenters(WIDTH, HEIGHT, TABLE_INSET);
             // Build all the segments [{startx, starty},{endx, endy}, table size]
-            const segments:[{x:number,y:number},{x:number,y:number},number][] = [
-                [{x:pockets.tl.x+POCKET_R,y:bounds.top- table/2},{x:pockets.tm.x-POCKET_R,y:bounds.top- table/2}, table],
-                [{x:pockets.tm.x+POCKET_R,y:bounds.top- table/2},{x:pockets.tr.x-POCKET_R,y:bounds.top- table/2}, table],
-                [{x:pockets.bl.x+POCKET_R,y:bounds.bottom+ table/2},{x:pockets.bm.x-POCKET_R,y:bounds.bottom+ table/2}, table],
-                [{x:pockets.bm.x+POCKET_R,y:bounds.bottom+ table/2},{x:pockets.br.x-POCKET_R,y:bounds.bottom+ table/2}, table],
-                [{x:bounds.left- table/2,y:pockets.tl.y+POCKET_R},{x:bounds.left- table/2,y:pockets.bl.y-POCKET_R}, table],
-                [{x:bounds.right+ table/2,y:pockets.tr.y+POCKET_R},{x:bounds.right+ table/2,y:pockets.br.y-POCKET_R}, table],
-            ]
+            const segments: [{ x: number, y: number }, { x: number, y: number }, number][] = [
+                [{ x: pockets.tl.x + POCKET_R, y: bounds.top - table / 2 }, { x: pockets.tm.x - POCKET_R, y: bounds.top - table / 2 }, table],
+                [{ x: pockets.tm.x + POCKET_R, y: bounds.top - table / 2 }, { x: pockets.tr.x - POCKET_R, y: bounds.top - table / 2 }, table],
+                [{ x: pockets.bl.x + POCKET_R, y: bounds.bottom + table / 2 }, { x: pockets.bm.x - POCKET_R, y: bounds.bottom + table / 2 }, table],
+                [{ x: pockets.bm.x + POCKET_R, y: bounds.bottom + table / 2 }, { x: pockets.br.x - POCKET_R, y: bounds.bottom + table / 2 }, table],
+                [{ x: bounds.left - table / 2, y: pockets.tl.y + POCKET_R }, { x: bounds.left - table / 2, y: pockets.bl.y - POCKET_R }, table],
+                [{ x: bounds.right + table / 2, y: pockets.tr.y + POCKET_R }, { x: bounds.right + table / 2, y: pockets.br.y - POCKET_R }, table],
+            ];
             // Create all the cushions -  need to compute center points, length, angle and then create
             // a - {startx, starty}, b - {endx, endy}, th - table size
             for (const [a,b,th] of segments) {
@@ -197,45 +268,49 @@ export default function PoolTable() {
         // Generate pockets
         const addPockets = () => {
             // Get pocket sizes and generate
-            const pockets = pocketCenters();
+            const pockets = pocketCenters(WIDTH, HEIGHT, TABLE_INSET);
             const pocketArray = Object.values(pockets).map(p =>
                 Bodies.circle(p.x, p.y, POCKET_R, { isStatic: true, isSensor: true, render: { fillStyle: pocketCol } })
             )
-            console.log(pockets )
             // Add to scene
             pocketsBodies.push(...pocketArray)
             Composite.add(engine.world, pocketArray)
         }
 
         // Generate ball
-        const  makeBall = (x:number, y:number, color='#fff', sprite: string) => {
-            return Bodies.circle(x, y, BALL_R, {
+        const  makeBall = (x:number, y:number, color='#fff', sprite: string | undefined, id?: number) => {
+            const b = Bodies.circle(x, y, BALL_R, {
                 restitution: BALL_RESTITUTION,
                 frictionAir: FRICTION_AIR,
                 friction: BALL_FRICTION,
                 density: 0.0018,
-                render: { fillStyle: color, strokeStyle: 'rgba(0,0,0,0.25)', lineWidth: 1, sprite: sprite ? { 
-                    texture: sprite,
-                    xScale: SCALE,
-                    yScale: SCALE
-                } : undefined }
-            })
+                render: {
+                    fillStyle: color,
+                    strokeStyle: 'rgba(0,0,0,0.25)',
+                    lineWidth: 1,
+                    sprite: sprite ? { texture: sprite, xScale: SCALE, yScale: SCALE } : undefined,
+                }
+            });
+            (b as any).ballId = id ?? null;
+            b.label = id ? `ball-${id}` : b.label;
+            return b;
         }
 
         // Generate rack with the balls
         const rackTriangle = (cx:number, cy:number) => {
             // gap between the balls
-            const gap = BALL_R*2.9;
-            const rows=5
-            let ballNumber = 1;
-            // Generate all the balls
-            const balls: Matter.Body[] = []
+            const gap = BALL_R * 2.9;
+            const rows = 5;
+            let id = 1; // start after cue
+            const balls: Matter.Body[] = [];
             for (let row=0; row<rows; row++){
                 for (let i=0; i<=row; i++){
-                    const x = cx + row*gap
-                    const y = cy - (row*gap)/2 + i*gap
-                    balls.push(makeBall(x,y, poolColors[balls.length % poolColors.length], BallSpriteMap[ballNumber]));
-                    ballNumber++;
+                    const x = cx + row*gap;
+                    const y = cy - (row*gap)/2 + i*gap;
+                    const sprite = SPRITES[id];
+                    const color = poolColors[(id - 1) % poolColors.length];
+                    balls.push(makeBall(x, y, color, sprite, id)); // sprite auto-picked from SPRITES[id]
+                    id++;
                 }
             }
             return balls
@@ -243,9 +318,6 @@ export default function PoolTable() {
         // Add the Pockets and cushions
         addPockets()
         addCushions()
-
-
-
 
         // -------------------------------------------
         // Draw the background before render to be under the balls and such
@@ -266,22 +338,26 @@ export default function PoolTable() {
             const ctx = (render as any).context as CanvasRenderingContext2D
 
             // Draw the rails
-            ctx.save(); 
-            ctx.strokeStyle='#733515'; 
-            ctx.lineWidth=14; 
-            // x, y, width, height
-            ctx.strokeRect(7,7,WIDTH-14,HEIGHT-14); 
-            ctx.restore()
-
-            // Generate the balls and shadows
             ctx.save();
-            ctx.globalCompositeOperation = 'destination-over'
-            ctx.fillStyle='rgba(0,0,0,0.22)'
+            ctx.strokeStyle = '#733515';
+            ctx.lineWidth = 14 * S;
+            ctx.strokeRect(7 * S, 7 * S, WIDTH - 14 * S, HEIGHT - 14 * S);
+            ctx.restore();
+
+            // Shadows
+            ctx.save();
+            ctx.globalCompositeOperation = 'destination-over';
+            ctx.fillStyle = 'rgba(0,0,0,0.22)';
             for (const body of Composite.allBodies(engine.world)) {
-                // Skip if boty isnt circular
                 if (!body.circleRadius || body.isStatic) continue;
                 ctx.beginPath();
-                ctx.ellipse(body.position.x+3,body.position.y+6,body.circleRadius*1.05,body.circleRadius*0.6,0,0,Math.PI*2);
+                ctx.ellipse(
+                body.position.x + 3 * S,
+                body.position.y + 6 * S,
+                body.circleRadius * 1.05,
+                body.circleRadius * 0.6,
+                0, 0, Math.PI * 2
+                );
                 ctx.fill();
             }
             ctx.restore();
@@ -292,7 +368,7 @@ export default function PoolTable() {
             // Cue ball (the ball we hit) + Guide lines
             if (cueBall && canShoot() ) {
                 const start = cueBall.position; // Start of the guide lines
-                const lineLen = 180; // Length og the guide lines
+                const lineLen = 180 * S; // Length og the guide lines
                 // End of the guide lines
                 const guideEnd = Vector.add(start, Vector.mult(aimDir, lineLen));
                 // Draw the guide lines
@@ -300,18 +376,18 @@ export default function PoolTable() {
                 ctx.beginPath();
                 ctx.moveTo(start.x,start.y); 
                 ctx.lineTo(guideEnd.x,guideEnd.y);
-                ctx.lineWidth=2; 
-                ctx.setLineDash([6,6]); 
+                ctx.lineWidth = 2 * S;
+                ctx.setLineDash([6 * S, 6 * S]);
                 ctx.strokeStyle='rgba(255,255,255,0.45)';
                 ctx.stroke(); 
                 ctx.restore();
 
                 // Stick sizes
-                const baseLength = 160; // Base length
-                const extra = pull*0.75; // Add the pull 
+                const baseLength = 160 * S; // Base length
+                const extra = pull*0.75 * S; // Add the pull 
                 const stickLen = baseLength + extra; // Final length
-                const stickWidth = 8; // Width
-                const back = Vector.add(start, Vector.mult(aimDir, -(BALL_R+6+stickLen)))
+                const stickWidth = 8 * S; // Width
+                const back = Vector.add(start, Vector.mult(aimDir, -(BALL_R+6 * S+stickLen)))
                 const angle = Math.atan2(aimDir.y, aimDir.x); // Aimed angle
                 // Draw the stick
                 ctx.save()
@@ -325,7 +401,7 @@ export default function PoolTable() {
                 ctx.fillStyle=stickGradient; 
                 ctx.fillRect(0,-stickWidth/2,stickLen,stickWidth)
                 ctx.fillStyle='#3aa3ff'; 
-                ctx.fillRect(stickLen-6,-stickWidth/2,6,stickWidth)
+                ctx.fillRect(stickLen-6,-stickWidth/2,6 * S,stickWidth)
                 ctx.restore()
             }
         })
@@ -341,9 +417,7 @@ export default function PoolTable() {
                 Composite.remove(engine.world, cueBall)
             }
             // Create and add tp the left quarter of the table - can tweek 
-            cueBall = makeBall(WIDTH*0.25, HEIGHT/2, '#ffffff', BallSpriteMap[0])
-            console.log(WIDTH, HEIGHT)
-            console.log(cueBall.position)
+            cueBall = makeBall(WIDTH*0.25, HEIGHT/2, '#ffffff', SPRITES[0], 0)
             cueBall.label = 'cueBall'
             Composite.add(engine.world, cueBall)
         }
@@ -365,22 +439,24 @@ export default function PoolTable() {
             const racked = rackTriangle(startX, startY);
             poolBalls.push(...racked);
             Composite.add(engine.world, racked);
+            // Reset strokes and scored balls
+            setScoredBalls([]);
+            setStrokes(0);
         }
         // Reset rack
         resetRack();
 
         // Input
-        const mouse = Mouse.create((render as any).canvas);
-        const mc = MouseConstraint.create(engine, { mouse, constraint: { stiffness: 0.2, render: { visible: false } } });
-        // disable dragging physics bodies
-        mc.collisionFilter.mask = 0x0000;
-        Composite.add(engine.world, mc);
-        
-
-        // Flags 
-        let aiming=false; 
-        let aimDir = Vector.create(1,0)
-        let pull = 0
+        const rect = (render as any).canvas.getBoundingClientRect();
+        console.log(
+            'canvas backing store:', (render as any).canvas.width, (render as any).canvas.height,
+            'css size:', rect.width, rect.height,
+            'render pixelRatio:', (render as any).options.pixelRatio
+        );
+        // Flags
+        let aiming = false;
+        let aimDir = Vector.create(1,0);
+        let pull = 0;
         const MAX_SPEED = 25
 
         // Check if all balls stand stilll
@@ -399,10 +475,53 @@ export default function PoolTable() {
             }
             return true
         }
+
         // Return true if balls are not moving and cueball exists
         const canShoot = () => { 
             return !!cueBall && ballsAreSleeping() 
         }
+
+        const mouse = Mouse.create((render as any).canvas);
+        (mouse as any).pixelRatio = 1; // we’ll map coords manually
+
+        const mc = MouseConstraint.create(engine, {
+        mouse,
+        constraint: { stiffness: 0.2, render: { visible: false } }
+        });
+        mc.collisionFilter.mask = 0x0000;
+        Composite.add(engine.world, mc);
+
+        // Mapper for correct mouse function after rotate
+        function updateMouseFromEvent(e: MouseEvent) {
+            const rect = (render as any).canvas.getBoundingClientRect();
+            const cssW = rect.width;   // visual width  = HEIGHT when rotated
+            const cssH = rect.height;  // visual height = WIDTH  when rotated
+            const canW = (render as any).options.width;   // logical canvas width  = WIDTH
+            const canH = (render as any).options.height;  // logical canvas height = HEIGHT
+
+            const u = e.clientX - rect.left; // screen X in rotated box
+            const v = e.clientY - rect.top;  // screen Y in rotated box
+
+            let xCanvas: number, yCanvas: number;
+
+            if (rotatedRef.current) {
+                // 90° CW inverse:
+                // x = v' ; y = H - u'
+                const vToX = canW / cssH; // v spans cssH -> x spans canW
+                const uToY = canH / cssW; // u spans cssW -> y spans canH
+                xCanvas = v * vToX;
+                yCanvas = canH - (u * uToY);
+            } else {
+                const uToX = canW / cssW;
+                const vToY = canH / cssH;
+                xCanvas = u * uToX;
+                yCanvas = v * vToY;
+            }
+
+            mouse.position.x = xCanvas;
+            mouse.position.y = yCanvas;
+        }
+
         // Ball place 
         const onMouseDown = () => {
             if (!canShoot()) return
@@ -431,7 +550,7 @@ export default function PoolTable() {
             pull = Math.max(0, Math.min(MAX_PULL, -dot))
             // Update powerbar ui
             if (powerBar){
-                powerBar.style.width = ((pull / MAX_PULL) * 100).toFixed(1) + '%';
+                powerBar.style.height = ((pull / MAX_PULL) * 100).toFixed(1) + '%';
             }
         }
         const onMouseUp = () => {
@@ -444,39 +563,44 @@ export default function PoolTable() {
                 // Set velocity to the cueball
                 Body.setVelocity(cueBall, shotVel)
             }
+            // Increment stroke
+            setStrokes((prev)=>prev+1)
             pull = 0; // Reset pull
             // Clean the power bar
             if (powerBar){
-                powerBar.style.width = '0%';
+                powerBar.style.height = '0%';
             }
         }
-        // Add the listeners
-        (render.canvas as HTMLCanvasElement).addEventListener('mousedown', onMouseDown)
-        window.addEventListener('mousemove', onMouseMove)
-        window.addEventListener('mouseup', onMouseUp)
+
+        const onDown = (e: MouseEvent) => { updateMouseFromEvent(e); onMouseDown(); };
+        const onMove = (e: MouseEvent) => { updateMouseFromEvent(e); onMouseMove(); };
+        const onUp   = (e: MouseEvent) => { updateMouseFromEvent(e); onMouseUp(); };
+
+        (render.canvas as HTMLCanvasElement).addEventListener('mousedown', onDown);
+        window.addEventListener('mousemove', onMove);
+        window.addEventListener('mouseup', onUp);
+
 
         // Keep aim updated when not pulling
-        Events.on(runner as unknown as Matter.Events, 'beforeTick', () => {
-            const ctx = (render as any).context as CanvasRenderingContext2D
-            
-            if (canShoot() && aiming && cueBall) {
+        Events.on(runner as unknown as Matter.Events, 'beforeTick', () => {            
+            if (canShoot() && !aiming && cueBall) {
+                /*
+                Debug shadows
                 ctx.save();
                 ctx.globalCompositeOperation = 'destination-over'
                 ctx.fillStyle='rgba(0,0,0,0.22)'
                 ctx.beginPath();
-                ctx.ellipse(mouse.position.x+3,mouse.position.y+6,50*1.05,60*0.6,0,0,Math.PI*2);
+                ctx.ellipse(mouse.position.x,mouse.position.y,50*1.05,60*0.6,0,0,Math.PI*2);
                 ctx.fill();
-                
                 ctx.save();
                 ctx.globalCompositeOperation = 'destination-over'
                 ctx.fillStyle='rgba(255, 255, 255, 0.98)'
                 ctx.beginPath();
                 ctx.ellipse(cueBall.position.x,cueBall.position.y,50*1.05,60*0.6,0,0,Math.PI*2);
                 ctx.fill();
-                
                 ctx.restore();
+                */
                 const v = Vector.sub(mouse.position, cueBall.position)
-                console.log(mouse.position, cueBall.position, v)
                 if (Vector.magnitude(v) > 0.0001) {
                     aimDir = Vector.normalise(v);
                 }
@@ -499,6 +623,10 @@ export default function PoolTable() {
                         : null
                 // If its a ball continue
                 if (ball && (ball as any).circleRadius === BALL_R) {
+                    const id = (ball as any).ballId as number | null; // 0..15 (0 = cue), or null if unset
+                    if(id && id>0){
+                        setScoredBalls((prev: number[]) => [...prev, id].sort((a, b) => a - b));
+                    }
                     // If its cueball respawn it
                     if (ball.label === 'cueBall') {
                         setTimeout(() => respawnCueBall(), 30)
@@ -512,7 +640,7 @@ export default function PoolTable() {
                 }
             }
         })
-
+        /*
         // FPS meter
         let frames=0;
         let last=performance.now()
@@ -526,6 +654,7 @@ export default function PoolTable() {
             requestAnimationFrame(rafFPS)
         }
         rafFPS();
+        */
 
         // Listen to Reset button from App
         const resetHandler: EventListener = () => resetRack()
@@ -534,32 +663,53 @@ export default function PoolTable() {
         // Cleanup on unmount
         return () => {
         document.removeEventListener('POOL_RESET', resetHandler);
+
         (render.canvas as HTMLCanvasElement).removeEventListener('mousedown', onMouseDown)
-        window.removeEventListener('mousemove', onMouseMove)
-        window.removeEventListener('mouseup', onMouseUp)
-        Render.stop(render); Runner.stop(runner)
-        Composite.clear(engine.world, false); Engine.clear(engine)
-        render.canvas.remove(); (render as any).textures = {}
+        window.removeEventListener('mousemove', onMouseMove);
+        window.removeEventListener('mouseup', onMouseUp);
+        
+        (render.canvas as HTMLCanvasElement).removeEventListener('mousedown', onDown);
+        window.removeEventListener('mousemove', onMove);
+        window.removeEventListener('mouseup', onUp);
+
+        Render.stop(render); 
+        Runner.stop(runner)
+        Composite.clear(engine.world, false); 
+        Engine.clear(engine)
+        render.canvas.remove(); 
+        (render as any).textures = {}
         }
-    }, [])
+    }, [size, rotated, setScoredBalls])
 
     return (
         <div className={styles.TableWrap}>
 
+            {/* outer sized box (unrotated dimensions) */}
             <div
-            id="tableWrap"
-            ref={hostRef}
-            className={styles.Table}
-            style={{ width: WIDTH, height: HEIGHT }}
-            ></div>
+            className={`${rotated ? styles.rotApply : ''} ${styles.rotOuter}`}
+            style={{
+            // visual box: when rotated, it’s HEIGHT x WIDTH
+            width: rotated ? `${size.height}px` : `${size.width}px`,
+            height: rotated ? `${size.width}px` : `${size.height}px`,
+            }}
+        >
+            <div className={rotated ? styles.rotInner : ''}>
+            <div
+                id="tableWrap"
+                ref={hostRef}
+                className={styles.Table}
+                style={{ width: size.width, height: size.height }}
+            />
+            </div>
+        </div>
+        {/*
             <div className={styles.Legs}>
                 <div className={styles.LegsTop}></div>
                 <div className={styles.Leg}></div>
                 <div className={styles.Leg}></div>
                 <div className={styles.Leg}></div>
-
-
             </div>
+            */}
         </div>
     )
 }
