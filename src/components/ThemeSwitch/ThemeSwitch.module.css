@@ -1,0 +1,143 @@
+.toggleButton {
+    height: fit-content;
+    width: fit-content;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    border: none;
+    background: transparent;
+    transition: 0.3s ease-out;
+}
+/*
+.toggleButton button {
+    height: fit-content;
+    width: fit-content;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    border: none;
+    background: transparent;
+}
+.toggleButton svg{
+    color: var(--contrast-secondary-color);
+    width: 20px;
+    height: 20px; 
+    transition: 0.3s ease-out;
+}
+.toggleButton:hover svg{
+    color: var(--contrast-color);
+}
+
+*/
+
+
+
+
+
+/* From Uiverse.io by Madflows */ 
+.toggleSwitch {
+  position: relative;
+  width: 80px;
+  height: 40px;
+  --light: var(--background-color);
+  --dark: var(--accent-color);
+  --link: var(--background-color);
+  --link-hover: rgb(24, 94, 82);
+}
+
+.switchLabel {
+  position: absolute;
+  width: 100%;
+  height: 40px;
+  background-color: var(--dark);
+  border-radius: 28px;
+  cursor: pointer;
+  box-sizing: border-box;
+  border: 3px solid var(--dark);
+  left: 0;
+  top: 0;
+}
+
+.checkbox {
+  position: absolute;
+  display: none;
+}
+
+.slider {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 25px;
+  -webkit-transition: 0.3s;
+  transition: 0.3s;
+  top: 0;
+  left: 0;
+}
+
+.checkbox:checked ~ .slider {
+  background-color: var(--light);
+}
+
+.slider::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  box-sizing: border-box;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  -webkit-box-shadow: inset 12px -4px 0px 0px var(--light);
+  box-shadow: inset 12px -4px 0px 0px var(--light);
+  background-color: var(--dark);
+  -webkit-transition: 0.3s;
+  transition: 0.3s;
+}
+
+.checkbox:checked ~ .slider::before {
+  -webkit-transform: translateX(35px);
+  -ms-transform: translateX(35px);
+  transform: translateX(35px);
+  background-color: var(--dark);
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+
+.toggle {
+    position: relative;
+    width: 63px;
+    height: 34px;
+    border-radius: 36px;
+    background: var(--background-tertiary-color);
+    border: 1px solid var(--background-blur-color);
+    cursor: pointer;
+}
+.toggle.active {
+    background:  color-mix(in srgb, var(--accent-color) 15%, var(--background-tertiary-color));
+    border: 1px solid color-mix(in srgb, var(--accent-color) 35%, transparent);
+}
+
+.toggle::after {
+    content: "";
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 23px;
+    height: 23px;
+    border-radius: 50%;
+    background: var(--background-color);
+    box-shadow: var(--shadow);
+
+        box-shadow: 0 10px 30px rgba(12, 31, 66, .48);
+    transition: transform .25s ease;
+}
+.toggle.active::after {
+    transform: translateX(28px);
+}

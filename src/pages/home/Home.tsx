@@ -20,6 +20,22 @@ import Ball13 from '../../assets/balls/13.png';
 import Ball14 from '../../assets/balls/14.png';
 import Ball15 from '../../assets/balls/15.png';
 import { RotateCcw } from "lucide-react";
+
+
+import Navbar from "../../components/Navbar/Navbar";
+
+
+
+
+
+
+
+
+
+
+
+
+
 const Home = () => {
     const [scoredBalls, setScoredBalls] = useState<number[]>([]);
     const [strokes, setStrokes] = useState<number>(0);
@@ -46,9 +62,8 @@ const Home = () => {
     return (
         <>
             <div className={styles.Page}>
-                <div className={styles.Header}>
-                    <h1>SBPool</h1>
-                </div>
+                <Navbar/>
+
                 <div className={styles.Content}>
 
                     
