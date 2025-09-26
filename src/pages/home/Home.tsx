@@ -268,7 +268,7 @@ Events.on(mouseConstraint, 'mouseup', (evt) => {
 
     const stickLength = 200;
     // Move base all the way to end, then half again in the same direction
-    const overshootBaseX = start.x + dx * (-0.5);
+    const overshootBaseX = start.x + dx * (0.5);
     const overshootBaseY = start.y + dy * (-0.5);
     // Center position for Matter.js stick
     const centerX = overshootBaseX + Math.cos(angle) * (stickLength / 2);

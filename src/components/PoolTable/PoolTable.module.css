@@ -4,7 +4,20 @@
     box-sizing: border-box;
     display: flex;
     position: relative;
+  width: unset !important;
+  height: unset !important;
+  /* or explicitly set to WIDTH and HEIGHT in px */
+  max-width: none;
+  max-height: none;
+
 } 
+.Table {
+  width: unset !important;
+  height: unset !important;
+  /* or explicitly set to WIDTH and HEIGHT in px */
+  max-width: none;
+  max-height: none;
+}
 
 .Legs{
     height: fit-content;

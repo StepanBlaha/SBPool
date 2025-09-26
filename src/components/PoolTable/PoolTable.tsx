@@ -342,6 +342,8 @@ export default function PoolTable() {
             }
             // Create and add tp the left quarter of the table - can tweek 
             cueBall = makeBall(WIDTH*0.25, HEIGHT/2, '#ffffff', BallSpriteMap[0])
+            console.log(WIDTH, HEIGHT)
+            console.log(cueBall.position)
             cueBall.label = 'cueBall'
             Composite.add(engine.world, cueBall)
         }
@@ -373,7 +375,7 @@ export default function PoolTable() {
         // disable dragging physics bodies
         mc.collisionFilter.mask = 0x0000;
         Composite.add(engine.world, mc);
-
+        
 
         // Flags 
         let aiming=false; 
@@ -411,7 +413,7 @@ export default function PoolTable() {
                 const v = Vector.sub(mouse.position, cueBall.position)
                 // If the vector length is big enough set aim direction 
                 if (Vector.magnitude(v) > 0.0001) {
-                    aimDir = Vector.normalise(v)
+                    aimDir = Vector.normalise(v);
                 }
             }
             // Reset pull force
@@ -455,8 +457,26 @@ export default function PoolTable() {
 
         // Keep aim updated when not pulling
         Events.on(runner as unknown as Matter.Events, 'beforeTick', () => {
-            if (canShoot() && !aiming && cueBall) {
+            const ctx = (render as any).context as CanvasRenderingContext2D
+            
+            if (canShoot() && aiming && cueBall) {
+                ctx.save();
+                ctx.globalCompositeOperation = 'destination-over'
+                ctx.fillStyle='rgba(0,0,0,0.22)'
+                ctx.beginPath();
+                ctx.ellipse(mouse.position.x+3,mouse.position.y+6,50*1.05,60*0.6,0,0,Math.PI*2);
+                ctx.fill();
+                
+                ctx.save();
+                ctx.globalCompositeOperation = 'destination-over'
+                ctx.fillStyle='rgba(255, 255, 255, 0.98)'
+                ctx.beginPath();
+                ctx.ellipse(cueBall.position.x,cueBall.position.y,50*1.05,60*0.6,0,0,Math.PI*2);
+                ctx.fill();
+                
+                ctx.restore();
                 const v = Vector.sub(mouse.position, cueBall.position)
+                console.log(mouse.position, cueBall.position, v)
                 if (Vector.magnitude(v) > 0.0001) {
                     aimDir = Vector.normalise(v);
                 }
@@ -526,7 +546,12 @@ export default function PoolTable() {
     return (
         <div className={styles.TableWrap}>
 
-            <div id="tableWrap" ref={hostRef} className={styles.Table}></div>
+            <div
+            id="tableWrap"
+            ref={hostRef}
+            className={styles.Table}
+            style={{ width: WIDTH, height: HEIGHT }}
+            ></div>
             <div className={styles.Legs}>
                 <div className={styles.LegsTop}></div>
                 <div className={styles.Leg}></div>
