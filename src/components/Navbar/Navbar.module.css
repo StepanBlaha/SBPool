@@ -1,12 +1,13 @@
 .Navbar{
-    height: fit-content;
+    height: 100px;
     width: 100%;
     display: flex;
     box-sizing: border-box;
     background-color: var(--background-secondary-color);
     justify-content: space-between;
-    padding: 30px;
+    padding: 10px;
     align-items: center;
+    position: relative;
 }
 .Logo{
     width: fit-content;
@@ -15,6 +16,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    height: 100%;
+    width: auto;
+    aspect-ratio: 1/1;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+
 }
 .Logo p{
     font-size: 40px;
@@ -22,6 +30,7 @@
     margin: 0;
     text-align: left;
     color: var(--contrast-color);
+    font-family: var(--display-font);
 }
 .Toggles{
     height: fit-content;
@@ -29,5 +38,6 @@
     box-sizing: border-box;
     display: flex;
     gap: 20px;
+    padding: 20px;
     align-items: center;
 }

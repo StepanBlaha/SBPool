@@ -19,7 +19,9 @@
   max-height: none;
 }
 .Table canvas{
-      border-radius: 21px;
+  border-radius: 21px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--background-secondary-color);
 }
 
 .rotOuter {

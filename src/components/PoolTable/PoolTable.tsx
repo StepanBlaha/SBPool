@@ -69,8 +69,8 @@ const BALL_FRICTION = 0.01;
 const CUSHION_RESTITUTION = 0.9;
 
 // Colors
-const felt = '#157a3d';
-const cushion = '#0b3f21';
+const felt = 'var(--accent-color)';
+const cushion = '#2E4E1E';
 const pocketCol = '#111';
 
 // Ball sprites
@@ -187,7 +187,7 @@ export default function PoolTable({setScoredBalls, setStrokes}: PoolTableProps) 
         const BALL_R = 10.5 * S;
 
         // Sprite scale (textures are 256px)
-        const SPRITE_PX = 256;
+        const SPRITE_PX = 700;
         const SCALE = (BALL_R * 2) / SPRITE_PX;
         // Get the hud power bar - outside of this elemend
         const powerBar = document.getElementById('powerBar') as HTMLDivElement
@@ -352,10 +352,10 @@ export default function PoolTable({setScoredBalls, setStrokes}: PoolTableProps) 
                 if (!body.circleRadius || body.isStatic) continue;
                 ctx.beginPath();
                 ctx.ellipse(
-                body.position.x + 3 * S,
-                body.position.y + 6 * S,
-                body.circleRadius * 1.05,
-                body.circleRadius * 0.6,
+                body.position.x + 2 * S,
+                body.position.y + 8 * S,
+                body.circleRadius * 1.45,
+                body.circleRadius * 0.8,
                 0, 0, Math.PI * 2
                 );
                 ctx.fill();
@@ -395,14 +395,26 @@ export default function PoolTable({setScoredBalls, setStrokes}: PoolTableProps) 
                 ctx.rotate(angle)
                 // Make stick have a gradient
                 const stickGradient = ctx.createLinearGradient(0,0,stickLen,0)
-                stickGradient.addColorStop(0,'#e1c699'); 
-                stickGradient.addColorStop(0.75,'#c29a64'); 
-                stickGradient.addColorStop(1,'#996633')
+                stickGradient.addColorStop(0,'#d8863a'); 
+                stickGradient.addColorStop(0.75,'#d8863a'); 
+                stickGradient.addColorStop(1,'#d8863a')
                 ctx.fillStyle=stickGradient; 
                 ctx.fillRect(0,-stickWidth/2,stickLen,stickWidth)
-                ctx.fillStyle='#3aa3ff'; 
+                ctx.fillStyle='#733515'; 
                 ctx.fillRect(stickLen-6,-stickWidth/2,6 * S,stickWidth)
                 ctx.restore()
+
+                ctx.save();
+                ctx.globalCompositeOperation = 'destination-over';
+                ctx.fillStyle = 'rgba(0,0,0,0.22)';
+                ctx.translate(back.x +6, back.y+ 6)
+                ctx.rotate(angle)
+                ctx.fillRect(0,-stickWidth/2,stickLen,stickWidth)
+
+                ctx.fillRect(stickLen-6,-stickWidth/2,6 * S,stickWidth)
+                ctx.restore()
+
+                
             }
         })
 

@@ -23,8 +23,8 @@ import { RotateCcw } from "lucide-react";
 
 
 import Navbar from "../../components/Navbar/Navbar";
-
-
+import Tooltip from "../../components/Tooltip/Tooltip";
+import { useTranslation } from "react-i18next";
 
 
 
@@ -37,6 +37,7 @@ import Navbar from "../../components/Navbar/Navbar";
 
 
 const Home = () => {
+    const {t} = useTranslation();
     const [scoredBalls, setScoredBalls] = useState<number[]>([]);
     const [strokes, setStrokes] = useState<number>(0);
     const SPRITES: (string | undefined)[] = [
@@ -83,8 +84,9 @@ const Home = () => {
                         </div>
                         <div className={styles.StrokeData}>
                             <div className={styles.StrokeCount}>
-                                <p>Strokes: {strokes}</p>
-                                <p>Scored: {scoredBalls.length}/15</p>
+                                <p>{t("hud.strokes")}: <span>{strokes}</span></p>
+                                <p>{t("hud.scored")}: <span>{scoredBalls.length}/15</span>
+                                </p>
                             </div>
 
                             <div className={styles.BallCounter}>
@@ -95,7 +97,8 @@ const Home = () => {
 
                         </div>
                     </div>
-
+                    
+                    <Tooltip/>
                 </div>
             </div>
         </>
