@@ -1,3 +1,13 @@
+
+
+@font-face{
+  font-family: "Sprite Graffiti";
+  src: url("/fonts/sprite-graffiti/SpriteGraffiti-Regular.woff2") format("woff2"),
+       url("/fonts/sprite-graffiti/SpriteGraffiti-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -5,8 +15,13 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+   --display-font: "Sprite Graffiti", system-ui, sans-serif; /* for logo/hero only */
+    --ui-font: "Montserrat", Arial, Helvetica, sans-serif;    /* everything else */
+  font-family: var(--ui-font);
 }
-
+p{
+  font-family: var(--ui-font);
+}
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
@@ -65,6 +80,64 @@ code {
 
 
 
+.light{
+  /* BRAND CORE */
+  --contrast-color: #000000 !important;
+  --contrast-blur-color: #00000077 !important;             /* Primary text / icons */
+  --background-color: #e8e5cf !important;        /* Page background (warm cream) */
+
+  /* ACCENTS (choose ONE primary green and we derive the rest) */
+  --accent-color: #6B8E23 !important;            /* Primary green (buttons, links, CTAs) */
+  --accent-secondary-color: #7FA135 !important;  /* Hover / active state */
+  --accent-tertiary-color: #A3B18A !important;   /* Subtle chips, badges, muted tags */
+  --accent-dark-color: #2E4E1E !important;       /* Focus rings, outlines on light BGs */
+
+  /* NEUTRALS (supporting text) */
+  --contrast-secondary-color: #2B2B2B !important; /* Secondary text, headings on cream */
+  --contrast-tertiary-color:  #6A6A6A !important; /* Placeholder, meta text */
+
+  /* SURFACES */
+  --background-secondary-color: #DBD7C3 !important; /* Cards / panels on cream */
+  --background-tertiary-color:  #F3F1E6 !important; /* Sub-cards, table rows */
+  --sort-hover-color:            #EDE9DB !important; /* Hover over list/table items */
+  --background-blur-color: rgba(232,229,207,0.70) !important; /* Frosted overlays */
+  --background-dark-color: #b6b4a4 !important;   
+
+  /* MISC */
+  --error-color: #FF1616 !important;
+  --shadow: 0 10px 30px rgba(12,31,66,0.08);      /* Soft, premium shadow */
+  --ring: rgba(46,78,30,0.35);                    /* Focus ring derived from accent-dark */
+}
+
+
+.dark{
+  /* BRAND CORE (dark surfaces use near-black for comfort/legibility) */
+  --contrast-color: #e8e5cf !important;      
+  --contrast-blur-color: #e8e5cf77 !important;         /* Primary text / icons on dark */
+  --background-color: #0f0f0f !important;         /* Base app background (avoid pure black) */
+
+  /* ACCENTS (slightly brighter on dark for contrast) */
+  --accent-color: #92B54A !important;             /* Primary green (buttons, links, CTAs) */
+  --accent-secondary-color: #A7C763 !important;   /* Hover / active state */
+  --accent-tertiary-color: #5A6B48 !important;    /* Subtle chips, badges */
+  --accent-dark-color: #A3B18A !important;        /* Focus ring / outlines on dark BGs */
+
+  /* NEUTRALS (supporting text) */
+  --contrast-secondary-color: #D8D5C6 !important; /* Secondary text */
+  --contrast-tertiary-color:  #A6A392 !important; /* Placeholder, meta text */
+
+  /* SURFACES (elevations get lighter tints on dark) */
+  --background-secondary-color: #151515 !important; /* Cards / panels */
+  --background-tertiary-color:  #1B1B1B !important; /* Sub-cards, table rows */
+  --sort-hover-color:            #1F1F1F !important; /* Hover over list/table items */
+  --background-blur-color: rgba(15,15,15,0.70) !important; /* Frosted overlays */
+
+  /* MISC */
+  --background-dark-color: #000000 !important;    /* Backdrop behind modals/toasts */
+  --error-color: #FF5A5A !important;              /* Slightly brighter red on dark */
+  --shadow: 0 12px 32px rgba(0,0,0,.45);          /* Dark-mode shadow */
+  --ring: rgba(163,177,138,.45) !important;       /* Olive focus ring derived from accent */
+}
 
 
 
