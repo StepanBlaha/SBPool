@@ -90,8 +90,8 @@ const Home = () => {
                             </div>
 
                             <div className={styles.BallCounter}>
-                                {SPRITES.map((ball, index)=>(
-                                    <div className={styles.Ball} style={{backgroundImage: `url(${SPRITES[index]})`}}></div>
+                                {scoredBalls.map((ball, index)=>(
+                                    <div className={styles.Ball} style={{backgroundImage: `url(${SPRITES[ball]})`}}></div>
                                 ))}
                             </div>
 
