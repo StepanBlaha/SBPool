@@ -13,6 +13,9 @@
     overflow-x: clip;
     box-sizing: border-box;
     min-height: 100%;
+        height: 100dvh;
+    min-height: fit-content;
+    padding-bottom: 100px;
 }
 
 .Content{
@@ -21,10 +24,12 @@
     box-sizing: border-box;
     width: 84%;
     display: flex;
-    flex-direction: row-reverse;
+    flex-direction: row;
     gap: 20px;
     align-items: stretch;
     position: relative;
+        height: fit-content;
+    min-height: fit-content;
 }
 .Table{
     width: min(100%, 1200px);   /* cap max size but stay responsive */
@@ -151,11 +156,13 @@
     flex-direction: row;
     justify-content: center;
     box-shadow: var(--shadow);
+    min-height: fit-content;
 
 }
 .StrokeData{
     max-width: 1200px;
     min-height: 50px;
+    min-height: fit-content;
     height: 100%;
     box-sizing: border-box;
     display: flex;
@@ -198,8 +205,8 @@
     font-weight: 700;
 }
 .BallCounter{
-    min-height: 50px;
-    height: 100%;
+    min-height: fit-content;
+    height: fit-content;
     box-sizing: border-box;
     display: flex;
     gap: 10px;
@@ -224,7 +231,7 @@
 }
 @media(max-width: 1600px){
     .Content{
-        flex-direction: column-reverse;
+        flex-direction: column;
         align-items: center;
     }
 }
