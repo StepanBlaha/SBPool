@@ -1,8 +1,5 @@
-import { t } from "i18next";
 import styles from "./Home.module.css"
-import {socket} from "../../lib/socket"
-import Matter, { Engine, Body, Events, Mouse, MouseConstraint, World,  Render, Runner, Bodies, Composite } from "matter-js";
-import { useRef, useEffect, useState } from "react";
+import { useState } from "react";
 import PoolTable from "../../components/PoolTable/PoolTable";
 import Ball0 from '../../assets/balls/0.png';
 import Ball1  from '../../assets/balls/1.png';
@@ -22,7 +19,6 @@ import Ball14 from '../../assets/balls/14.png';
 import Ball15 from '../../assets/balls/15.png';
 import { RotateCcw } from "lucide-react";
 
-import NamePanel from "../../components/NamePanel/NamePanel";
 import Navbar from "../../components/Navbar/Navbar";
 import Tooltip from "../../components/Tooltip/Tooltip";
 import { useTranslation } from "react-i18next";

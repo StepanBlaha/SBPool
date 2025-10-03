@@ -1,7 +1,6 @@
 import AppRoutes from './routes'
 import { BrowserRouter } from 'react-router-dom';
 import "./App.css"
-import PoolTable from './components/PoolTable/PoolTable';
 
 function App() {
 

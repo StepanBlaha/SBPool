@@ -1,5 +1,4 @@
 import styles from "./Navbar.module.css"
-import { useState } from "react"
 import LanguageSwitch from "../LanguageSwitch/LanguageSwitch"
 import ThemeSwitch from "../ThemeSwitch/ThemeSwitch"
 import Logo from "../../assets/logo.png"
