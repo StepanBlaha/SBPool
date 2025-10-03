@@ -2,7 +2,6 @@ import { useRef, useEffect } from 'react';
 import { useTheme } from '../../context/ThemeContext';
 import { flushSync } from 'react-dom';
 import "@theme-toggles/react/css/Classic.css"
-import { Classic } from "@theme-toggles/react"
 import styles from "./ThemeSwitch.module.css"
 
 const ThemeSwitch = () => {
@@ -58,11 +57,7 @@ const ThemeSwitch = () => {
             document.documentElement.classList.remove('dark');
         }
     }, [theme]);
-    // Button wrapper - to avoid errors
-    const Wrapper = (props: any) => {
-        const { onPointerEnterCapture, onPointerLeaveCapture, ...rest } = props;
-        return <Classic {...rest} />;
-    };
+
     return(
         <>
         {
