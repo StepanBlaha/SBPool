@@ -22,7 +22,7 @@ import { RotateCcw } from "lucide-react";
 import Navbar from "../../components/Navbar/Navbar";
 import Tooltip from "../../components/Tooltip/Tooltip";
 import { useTranslation } from "react-i18next";
-
+import { Helmet } from "react-helmet-async";
 
 
 
@@ -59,7 +59,14 @@ const Home = () => {
 
     return (
         <>
-            <div className={styles.Page}>
+            <main className={styles.Page}>
+                <Helmet>
+                    <title>Horáci stav, stavební firma</title>
+                    <meta
+                        name="description"
+                        content="My jsme stavební firma Horáci stav, děláme kompletní stavby, rekonstrukce, tesařské práce, pokrývačské práce, elektroinstalace a hromosvody."
+                    />
+                </Helmet>
                 <Navbar/>
 
 
@@ -101,7 +108,7 @@ const Home = () => {
                     
                     <Tooltip/>
                 </div>
-            </div>
+            </main>
         </>
     )
 }
