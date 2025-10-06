@@ -79,6 +79,7 @@ const Home = () => {
                                 <div id="powerBar" className={styles.powerBar} />
                             </div>
                             <button
+                                name="Reset game button"
                                 className={styles.resetBtn}
                                 onClick={() => document.dispatchEvent(new CustomEvent('POOL_RESET'))}
                             >

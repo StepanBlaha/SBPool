@@ -60,23 +60,15 @@ const ThemeSwitch = () => {
 
     return(
         <>
-        {
-            /*
-
-            <div className={styles.toggleButton} ref={ref} onClick={toggleDarkMode}>
-                <div className={styles.toggleSwitch}>
-                <label className={styles.switchLabel}>
-                            <input type="checkbox" className={styles.checkbox} checked={theme === "light" } />
-                    <span className={styles.slider}></span>
-                </label>
-                </div>
-            </div>
-
-            */
-        }
-
-        <div className={`${styles.toggle} ${theme === "dark" ? styles.active : ""}`}  ref={ref} onClick={toggleDarkMode} role="switch">
-                
+        <div
+            className={`${styles.toggle} ${theme === "dark" ? styles.active : ""}`}
+            ref={ref}
+            onClick={toggleDarkMode}
+            aria-checked={theme === 'dark'}                // REQUIRED for role="switch"
+            aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'} // accessible name
+            tabIndex={0}           
+            role="switch"
+        >     
         </div>
         </>
     )
