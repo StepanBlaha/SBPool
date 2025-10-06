@@ -7,14 +7,14 @@ const Navbar = () => {
 
     return(
         <>
-        <div className={styles.Navbar}>
+        <nav className={styles.Navbar}>
             <div className={styles.Logo} style={{backgroundImage: `url(${Logo})`}}>
             </div>
             <div className={styles.Toggles}>
                 <ThemeSwitch/>
                 <LanguageSwitch type="pc"/>
             </div>
-        </div>
+        </nav>
         
         </>
     )
