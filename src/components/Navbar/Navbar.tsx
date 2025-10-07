@@ -3,6 +3,10 @@ import LanguageSwitch from "../LanguageSwitch/LanguageSwitch"
 import ThemeSwitch from "../ThemeSwitch/ThemeSwitch"
 import Logo from "../../assets/logo.png"
 
+/**
+ * Navbar component used in header
+ * @returns TSX.Element
+ */
 const Navbar = () => {
 
     return(

@@ -1,16 +1,22 @@
 // contexts/TimeModalContext.tsx
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useTranslation } from 'react-i18next';
-
+/**
+* Props for the LanguageContext component.
+*/ 
 interface LanguageContextType {
-    /** Currently selected language code (e.g., "cz") */
-    selectedLanguage: string;
-    /** Setter function to update the selected language */
-    setSelectedLanguage: (lang: string) => void;
+    selectedLanguage: string; // Currently selected language code (e.g., "cz")
+    setSelectedLanguage: (lang: string) => void; // Setter function to update the selected language
 }
-
+/**
+ * React context to provide selected language
+ */
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
-
+/**
+* Provider component for changing website language
+* 
+* @param children - React child elements
+*/
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { i18n } = useTranslation(); // Translation
     // Selected language

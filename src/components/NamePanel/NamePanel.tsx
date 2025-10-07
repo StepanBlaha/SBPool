@@ -1,12 +1,23 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { socket } from '../../lib/socket';
-
+/**
+* Props for the NamePanel component.
+*/ 
 type Props = {
   // Optional: keep name in parent if you want
   valueFromParent?: string;
+  // Name change
   onNameChange?: (name: string) => void;
 };
-
+/**
+* A NamePanel component
+* Used only for multiplayer version
+*
+* @param props NamePanel props
+* @param {string} props.valueFromParent - Optional: keep name in parent if you want
+* @param {(name: string)=>void} props.onNameChange - Name change
+* @returns TSX.Element
+*/
 export default function NamePanel({ valueFromParent, onNameChange }: Props) {
   // Local input value
   const [name, setName] = useState<string>(valueFromParent ?? '');

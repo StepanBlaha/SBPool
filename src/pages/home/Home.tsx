@@ -68,11 +68,8 @@ const Home = () => {
                     />
                 </Helmet>
                 <Navbar/>
-
-
+                
                 <div className={styles.Content}>
-
-
                     <div className={styles.CounterWrap}>
                         <div className={styles.Hud}>
                             <div className={styles.powerWrap} title="Shot power">

@@ -3,6 +3,11 @@ import { useState, useRef, useEffect } from "react";
 import { InfoIcon } from "lucide-react";
 import { Trans, useTranslation } from "react-i18next";
 import Logo from "../../assets/logo.png"
+
+/**
+ * Tooltip component
+ * @returns  TSX.Element
+ */
 const Tooltip = () => {
     const { t } = useTranslation()
     const ref = useRef<HTMLDivElement>(null); 

@@ -3,7 +3,10 @@ import { useTheme } from '../../context/ThemeContext';
 import { flushSync } from 'react-dom';
 import "@theme-toggles/react/css/Classic.css"
 import styles from "./ThemeSwitch.module.css"
-
+/**
+ * theme switch componment
+ * @returns TSX.Element
+ */
 const ThemeSwitch = () => {
     const { theme, toggleTheme } = useTheme();
     const ref = useRef<HTMLDivElement>(null);

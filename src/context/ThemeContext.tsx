@@ -1,14 +1,23 @@
 // contexts/TimeModalContext.tsx
 import React, { createContext, useContext, useState, useEffect } from "react";
 type Theme = 'light' | 'dark';
-
+/**
+* Props for the ThemeContext component.
+*/ 
 interface ThemeContextType {
-    theme: Theme;
-    toggleTheme: () => void;
+    theme: Theme; // Selected Theme
+    toggleTheme: () => void; // Theme setter
 }
 
+/**
+* React context to provide theme
+*/
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
-
+/**
+* Provider component for changing website theme
+* 
+* @param children - React child elements
+*/
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [theme, setTheme] = useState<Theme>("dark");
 
