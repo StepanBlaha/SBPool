@@ -165,11 +165,18 @@ export default function PoolTable({setScoredBalls, setStrokes}: PoolTableProps) 
         const S = WIDTH / ASPECT_W;
         const TABLE_INSET = 36 * S;
         const POCKET_R = 22 * S;
-        const BALL_R = 10.5 * S;
 
         // Sprite scale (textures are 256px)
-        const SPRITE_PX = 700;
-        const SCALE = (BALL_R * 2) / SPRITE_PX;
+        const VISUAL_DIAM = 27 * S;
+
+        // sprite size is locked to visual
+        const SPRITE_PX = 1000;
+        const SCALE = VISUAL_DIAM / SPRITE_PX;
+
+        // physics radius — bump it a hair so it "fills" the painted disc
+        const HITBOX_SCALE = 1.0;                  // try 1.02–1.06
+        const BALL_R = (VISUAL_DIAM / 2) * HITBOX_SCALE;
+        
         // Get the hud power bar - outside of this elemend
         const powerBar = document.getElementById('powerBar') as HTMLDivElement
         // Engine & render
@@ -266,7 +273,7 @@ export default function PoolTable({setScoredBalls, setStrokes}: PoolTableProps) 
         // Generate rack with the balls
         const rackTriangle = (cx:number, cy:number) => {
             // gap between the balls
-            const gap = BALL_R * 2.9;
+            const gap = BALL_R * 2.4;
             const rows = 5;
             let id = 1; // start after cue
             const balls: Matter.Body[] = [];
@@ -319,9 +326,9 @@ export default function PoolTable({setScoredBalls, setStrokes}: PoolTableProps) 
                 if (!body.circleRadius || body.isStatic) continue;
                 ctx.beginPath();
                 ctx.ellipse(
-                body.position.x + 2 * S,
-                body.position.y + 8 * S,
-                body.circleRadius * 1.45,
+                body.position.x + 3 * S,
+                body.position.y + 6 * S,
+                body.circleRadius * 1.05,
                 body.circleRadius * 0.8,
                 0, 0, Math.PI * 2
                 );
