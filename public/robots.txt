@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://sb-pool-sb.vercel.app/sitemap.xml
+Sitemap: https://sbpool.stepanblaha.com/sitemap.xml
