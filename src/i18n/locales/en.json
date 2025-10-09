@@ -1,7 +1,11 @@
 {
     "hud":{
         "strokes": "Strokes",
-        "scored": "Scored"
+        "scored": "Scored",
+        "player": "Player",
+        "color": "Color",
+        "win": "has won",
+        "reset": "Reset game"
     },
     "tooltip":{
         "title": "How to play",

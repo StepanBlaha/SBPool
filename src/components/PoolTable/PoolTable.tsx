@@ -87,6 +87,8 @@ interface PoolTableProps {
   setScoredBalls: React.Dispatch<React.SetStateAction<number[]>>;
   // Played strokes number setter
   setStrokes: React.Dispatch<React.SetStateAction<number>>
+  // All balls stopped
+  onBallsStopped?: () => void; // ← optional
 }
 /**
  * Pooltable component
@@ -94,9 +96,10 @@ interface PoolTableProps {
  * @param props LangSwitch props
  * @param {React.Dispatch<React.SetStateAction<number[]>>} props.setScoredBalls - Scored balls counter setter
  * @param {React.Dispatch<React.SetStateAction<number>>} props.setStrokes - Played strokes number setter
+ * @param {()=>void} props.onBallsStopped - Set all balls stopped flag
  * @returns 
  */
-export default function PoolTable({setScoredBalls, setStrokes}: PoolTableProps) {
+export default function PoolTable({setScoredBalls, setStrokes, onBallsStopped}: PoolTableProps) {
   // Calculate size
   function computeSize(rotated: boolean) {
     const vw = window.innerWidth - VPAD_X * 2;
@@ -163,6 +166,16 @@ export default function PoolTable({setScoredBalls, setStrokes}: PoolTableProps) 
       br: { x: right, y: bottom }
     };
   }
+  // Track when all balls stop moving 
+    const prevMovingRef = useRef<boolean>(true);            // last "moving" state
+    const stableStopSinceRef = useRef<number | null>(null); // timestamp of first stop detection
+    const stopDebounceMs = 200;                              // ignore tiny jitters
+    // Keep a reference to the callback so it’s stable inside listeners
+    const onBallsStoppedRef = useRef(onBallsStopped);
+
+    useEffect(() => {
+  onBallsStoppedRef.current = onBallsStopped;
+}, [onBallsStopped]);
 
   useEffect(() => {
     // Return on no table
@@ -465,11 +478,50 @@ export default function PoolTable({setScoredBalls, setStrokes}: PoolTableProps) 
       }
       return true
     }
-
-    // Return true if balls are not moving and cueball exists
+      // Return true if balls are not moving and cueball exists
     const canShoot = () => { 
       return !!cueBall && ballsAreSleeping() 
     }
+
+    
+    onBallsStoppedRef.current = onBallsStopped;
+
+    const afterUpdateHandler = () => {
+      // moving = any ball has speed/rotation above thresholds
+      const moving = !ballsAreSleeping();
+      const now = performance.now();
+
+      if (!moving) {
+        // started being "stopped" now: mark time
+        if (stableStopSinceRef.current === null) {
+          stableStopSinceRef.current = now;
+        }
+        // if we've been steadily stopped for debounce, fire on falling edge
+        if (
+          prevMovingRef.current === true &&
+          now - stableStopSinceRef.current >= stopDebounceMs
+        ) {
+          prevMovingRef.current = false;
+          stableStopSinceRef.current = null;
+
+          // 👉 Set your value here:
+          // Example A: local state
+          // setIsWaiting(true);
+
+          // Example B: notify parent via prop
+          onBallsStoppedRef.current?.();
+        }
+      } else {
+        // moving again; reset
+        prevMovingRef.current = true;
+        stableStopSinceRef.current = null;
+      }
+    };
+
+    // Attach / detach the listener
+    Events.on(engine, "afterUpdate", afterUpdateHandler);
+
+  
 
     const mouse = Mouse.create((render as any).canvas);
     (mouse as any).pixelRatio = 1; // we’ll map coords manually
@@ -599,7 +651,7 @@ export default function PoolTable({setScoredBalls, setStrokes}: PoolTableProps) 
         if (ball && (ball as any).circleRadius === BALL_R) {
           const id = (ball as any).ballId as number | null; // 0..15 (0 = cue), or null if unset
           if(id && id>0){
-              setScoredBalls((prev: number[]) => [...prev, id].sort((a, b) => a - b));
+              setScoredBalls(prev => [...prev, id]);
           }
           // If its cueball respawn it
           if (ball.label === 'cueBall') {
@@ -622,6 +674,7 @@ export default function PoolTable({setScoredBalls, setStrokes}: PoolTableProps) 
 
     // Cleanup on unmount
     return () => {
+      Events.off(engine, "afterUpdate", afterUpdateHandler as any);
       document.removeEventListener('POOL_RESET', resetHandler);
 
       (render.canvas as HTMLCanvasElement).removeEventListener('mousedown', onMouseDown)

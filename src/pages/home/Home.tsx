@@ -1,4 +1,333 @@
 import styles from "./Home.module.css"
+import { useState, useRef, useEffect, useCallback } from "react";
+import PoolTable from "../../components/PoolTable/PoolTable";
+import Ball0 from '../../assets/balls/0.png';
+import Ball1  from '../../assets/balls/1.png';
+import Ball2  from '../../assets/balls/2.png';
+import Ball3  from '../../assets/balls/3.png';
+import Ball4  from '../../assets/balls/4.png';
+import Ball5  from '../../assets/balls/5.png';
+import Ball6  from '../../assets/balls/6.png';
+import Ball7  from '../../assets/balls/7.png';
+import Ball8  from '../../assets/balls/8.png';
+import Ball9  from '../../assets/balls/9.png';
+import Ball10 from '../../assets/balls/10.png';
+import Ball11 from '../../assets/balls/11.png';
+import Ball12 from '../../assets/balls/12.png';
+import Ball13 from '../../assets/balls/13.png';
+import Ball14 from '../../assets/balls/14.png';
+import Ball15 from '../../assets/balls/15.png';
+import { RotateCcw } from "lucide-react";
+
+import Navbar from "../../components/Navbar/Navbar";
+import Tooltip from "../../components/Tooltip/Tooltip";
+import { useTranslation } from "react-i18next";
+import { Helmet } from "react-helmet-async";
+
+
+
+
+
+
+
+type ballType = "full" | "water"
+type ballList = {
+    full: number[];
+    stripped: number[];
+};
+
+const Home = () => {
+    const {t} = useTranslation();
+    const [scoredBalls, setScoredBalls] = useState<number[]>([]);
+    const SPRITES: (string | undefined)[] = [
+        Ball0,  // 0 = cue
+        Ball1,  // 1
+        Ball2,  // 2
+        Ball3,  // 3
+        Ball4,  // 4
+        Ball5,  // 5
+        Ball6,  // 6
+        Ball7,  // 7
+        Ball8,  // 8
+        Ball9,  // 9
+        Ball10, // 10
+        Ball11, // 11
+        Ball12, // 12
+        Ball13, // 13
+        Ball14, // 14
+        Ball15  // 15
+    ];
+    const balls: ballList = {
+        "full": [1, 2, 3, 4, 5, 6, 7],
+        "stripped": [9, 10, 11, 12, 13, 14, 15]
+    }
+
+    // What user has what flag
+    const [firstCol, setFirstCol] = useState<"stripped"|"full">();
+    const [secondCol, setSecondCol] = useState<"stripped"|"full">();
+    const [firstStrokes, setFirstStrokes] = useState<number>(0);
+    const [secondStrokes, setSecondStrokes] = useState<number>(0);
+
+
+    const [strokes, setStrokes] = useState<number>(0);
+
+    const [multiplayer, setMultiplayer] = useState<boolean>(false);
+    const ref = useRef<HTMLDivElement>(null);
+    const [isWaiting, setIsWaiting] = useState<boolean>(false);
+    const [currPlayer, setCurrPlayer] = useState<1 | 2>(1);
+
+    const [hasWon, setHasWon] = useState<number>()
+
+
+    const prevScoredCountRef = useRef(0);
+
+    // Track the previous score
+    useEffect(() => {
+        if (!multiplayer) return;
+        prevScoredCountRef.current = scoredBalls.length;
+    }, [strokes, multiplayer]);
+
+    // Update players strokes
+    useEffect(()=>{
+        if(strokes === 0) return;
+        if (currPlayer === 1) {
+            setFirstStrokes(firstStrokes+1);
+        } else {
+            setSecondStrokes(secondStrokes+1);
+        }
+    },[strokes])
+
+
+
+    // Helper to find balls color
+    const findBallsColor = (ballId: number) => {
+        if(balls.full.includes(ballId)){
+            return"full";
+        }else{
+            return "stripped";
+        }
+    }
+
+
+    const handleBallsStopped = useCallback(() => {
+        if (!multiplayer) return;
+
+        // Balls scored in THIS shot only
+        const pottedThisShot = scoredBalls.slice(prevScoredCountRef.current);
+        // Current players color
+        const currentColor = currPlayer === 1 ? firstCol : secondCol;
+        // Keep turn flag
+        let keepTurn = false;
+        // First scored ball
+        if (!currentColor) {
+            if (pottedThisShot.length > 0) {
+                const firstColHit = findBallsColor(pottedThisShot[0]);
+                const other = firstColHit === "full" ? "stripped" : "full";
+                // Set player colors
+                if (currPlayer === 1) {
+                    setFirstCol(firstColHit);
+                    setSecondCol(other);
+                } else {
+                    setSecondCol(firstColHit);
+                    setFirstCol(other);
+                }
+                // Shooter keeps the table
+                keepTurn = true; 
+            }
+        } else {
+            // Keep turn if they potted one of their own
+            keepTurn = pottedThisShot.some(id => balls[currentColor].includes(id));
+        }
+
+        // Show popup and swtch player only if they havent scored their own ball
+        if(!keepTurn){
+            setIsWaiting(true);
+            setTimeout(() => setIsWaiting(false), 1000);
+            setCurrPlayer(p => (p === 1 ? 2 : 1));
+        }
+        console.log(pottedThisShot)
+        // Handle win / lose state
+        if(pottedThisShot.includes(8)){
+            
+            const scoredNumber = scoredBalls.filter(ball=>currentColor !== undefined && balls[currentColor].includes(ball)).length
+            const nextPlayer = currPlayer === 1 ? 2 : 1;
+            console.log(8)
+            console.log(currentColor)
+            console.log(scoredNumber)
+            if(scoredNumber >=7){
+                setHasWon(currPlayer)
+                console.log(currPlayer)
+            }else{
+                setHasWon(nextPlayer)
+                console.log(nextPlayer)
+            }
+        }
+
+
+
+        // Create new snapshot
+        prevScoredCountRef.current = scoredBalls.length;
+    }, [multiplayer, currPlayer, scoredBalls, firstCol, secondCol, balls]);
+    // Reset the game -  potrebuje resetovat i game screen 
+    const restartGame = () => {
+
+        setScoredBalls([]);
+
+        setStrokes(0);
+        setFirstStrokes(0);
+        setSecondStrokes(0);
+
+        setFirstCol(undefined);
+        setSecondCol(undefined);
+
+        setCurrPlayer(1);
+        setIsWaiting(false);
+        prevScoredCountRef.current = 0;
+        setHasWon(undefined);
+    }
+
+
+
+
+    return (
+        <>
+            <main className={styles.Page}>
+                <Helmet>
+                    <title>SBPool</title>
+                    <meta
+                        name="description"
+                        content="SBPool - 8Ball Pool game made in react, typescript and matterjs by Stepan Blaha"
+                    />
+                </Helmet>
+                <Navbar/>
+                
+                <div className={styles.Content}>
+
+                    {isWaiting && (
+                        <div className={styles.Overlay}>
+                            <div className={styles.OverlayBlur}></div>
+                            <p className={styles.OverlayText}>{t("hud.player")} {currPlayer}</p>
+                        </div>
+                    )}
+                    {hasWon && (
+                        <div className={styles.Overlay}>
+                            <div className={styles.OverlayBlur}></div>
+                            <div className={styles.OverlayContent}>
+                                <p className={styles.OverlayText}>{t("hud.player")} {currPlayer} {t("hud.win")}</p>
+                                <div className={styles.OverlayButton} onClick={restartGame}>
+                                    <p>{t("hud.reset")}</p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    <div className={styles.CounterWrap}>
+                        
+                        <div className={styles.Hud}>
+                            <div className={styles.powerWrap} title="Shot power">
+                                <div id="powerBar" className={styles.powerBar} />
+                            </div>
+                            <button
+                                name="Reset game button"
+                                className={styles.resetBtn}
+                                onClick={() => document.dispatchEvent(new CustomEvent('POOL_RESET'))}
+                            >
+                                <RotateCcw/>
+                            </button>
+                            <div
+                                className={`${styles.toggle} ${multiplayer ? styles.active : ""}`}
+                                ref={ref}
+                                onClick={()=>setMultiplayer(!multiplayer)}
+                                aria-checked={multiplayer}                // REQUIRED for role="switch"
+                                aria-label={multiplayer ? 'Switch to single player mode' : 'Switch to multi player mode'} // accessible name
+                                tabIndex={0}           
+                                role="switch"
+                            >     
+                            </div>
+                        </div>
+                        {multiplayer ? (
+                            <>
+                            <div className={styles.StrokeDataWrap}>
+                                <div className={styles.StrokeData}>
+                                    <div className={styles.StrokeCount}>
+                                        <p>{t("hud.player")}: <span>1</span></p>
+                                        <p>{t("hud.color")}: <span>{firstCol}</span></p>
+                                        <p>{t("hud.strokes")}: <span>{firstStrokes}</span></p>
+                                        <p>{t("hud.scored")}: <span>{scoredBalls.filter(ball => firstCol && balls[firstCol].includes(ball)).length}/7</span></p>
+                                    </div>
+
+                                    <div className={styles.BallCounter}>
+                                        {[...scoredBalls].sort((a,b)=>a-b).map(ball=>{
+                                            if (firstCol !== undefined && balls[firstCol].includes(ball)) {
+                                                return(
+                                                <div className={styles.Ball} style={{backgroundImage: `url(${SPRITES[ball]})`}}></div>
+                                                )
+                                            }
+                                        })}
+                                    </div>
+
+                                </div>
+                                <div className={styles.StrokeData}>
+                                    <div className={styles.StrokeCount}>
+                                        <p>{t("hud.player")}: <span>2</span></p>
+                                        <p>{t("hud.color")}: <span>{secondCol}</span></p>
+                                        <p>{t("hud.strokes")}: <span>{secondStrokes}</span></p>
+                                        <p>{t("hud.scored")}: <span>{scoredBalls.filter(ball => secondCol && balls[secondCol].includes(ball)).length}/7</span></p>
+                                    </div>
+
+                                    <div className={styles.BallCounter}>
+                                        {[...scoredBalls].sort((a,b)=>a-b).map(ball=>{
+                                            if (secondCol !== undefined && balls[secondCol].includes(ball)) {
+                                                return(
+                                                <div className={styles.Ball} style={{backgroundImage: `url(${SPRITES[ball]})`}}></div>
+                                                )
+                                            }
+                                        })}
+                                    </div>
+
+                                </div>
+                            </div>
+                            </>
+                        ) : (
+                            <div className={styles.StrokeData}>
+                                <div className={styles.StrokeCount}>
+                                    <p>{t("hud.strokes")}: <span>{strokes}</span></p>
+                                    <p>{t("hud.scored")}: <span>{scoredBalls.length}/15</span>
+                                    </p>
+                                </div>
+
+                                <div className={styles.BallCounter}>
+                                    {[...scoredBalls].sort((a,b)=>a-b).map(ball=>(
+                                        <div className={styles.Ball} style={{backgroundImage: `url(${SPRITES[ball]})`}}></div>
+                                    ))}
+                                </div>
+
+                            </div>
+                        )}
+
+                    </div>
+                    
+                    <PoolTable
+                    setScoredBalls={setScoredBalls}
+                    setStrokes={setStrokes}
+                    onBallsStopped={handleBallsStopped}
+                    />
+
+                    
+                    <Tooltip/>
+                </div>
+            </main>
+        </>
+    )
+}
+
+export default Home;
+
+
+
+/*
+
+Without multiplayer
+import styles from "./Home.module.css"
 import { useState } from "react";
 import PoolTable from "../../components/PoolTable/PoolTable";
 import Ball0 from '../../assets/balls/0.png';
@@ -56,6 +385,8 @@ const Home = () => {
     ];
     const [strokes, setStrokes] = useState<number>(0);
 
+    const [multiplayer, setMultiplayer] = useState<boolean>(false);
+    const ref = useRef<HTMLDivElement>(null);
 
     return (
         <>
@@ -71,6 +402,16 @@ const Home = () => {
                 
                 <div className={styles.Content}>
                     <div className={styles.CounterWrap}>
+                        <div
+            className={`${styles.toggle} ${multiplayer ? styles.active : ""}`}
+            ref={ref}
+            onClick={()=>setMultiplayer(!multiplayer)}
+            aria-checked={multiplayer}                // REQUIRED for role="switch"
+            aria-label={multiplayer ? 'Switch to single player mode' : 'Switch to multi player mode'} // accessible name
+            tabIndex={0}           
+            role="switch"
+        >     
+        </div>
                         <div className={styles.Hud}>
                             <div className={styles.powerWrap} title="Shot power">
                                 <div id="powerBar" className={styles.powerBar} />
@@ -114,6 +455,28 @@ const Home = () => {
 
 export default Home;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*/
 
 
 

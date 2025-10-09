@@ -1,7 +1,11 @@
 {
     "hud":{
         "strokes": "Tahy",
-        "scored": "Skóre"
+        "scored": "Skóre",
+        "player": "Hráč",
+        "color": "Barva",
+        "win": "vyhrál",
+        "reset": "Resetovat hru"
     },
     "tooltip":{
         "title": "Jak hrát",
