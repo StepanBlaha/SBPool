@@ -1,69 +1,102 @@
-# React + TypeScript + Vite
+# SBPool 
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**SBPool** is a 8-ball pool game made in react and typescript. Play a local multiplayer and try to beat your friend or turn on singleplayer mode and try to clear the game with the fewest strokes!
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🌟 Features
 
-## Expanding the ESLint configuration
+- **Singleplayer Mode**
+  - Play alone
+  - Try to clear the table with the fewest strokes possible
+    
+- **Multiplayer Mode**
+  - Play with your friend in local pvp
+  - Online multiplayer is on the way!!
+    
+- **Game Reset**
+  - Dont like the way your game is going? Simply press the reset button and start over
+    
+- **Themes**
+  - Easily switch between light and dark mode to play the way that suits you
+    
+- **Localization**
+  - Switch between languages easily with a click of a button  
+  - SBPool currently supports 2 languages:
+    - Czech
+    - English
+      
+- **Custom Art**
+  - All of the assets are custom made with love
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 🚀 Getting Started
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Prerequisites
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- npm
+
+### Setup
+
+#### Installation
+
+```bash
+git clone https://github.com/StepanBlaha/SBPool
+cd SBPool
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+If there is a problem with dependencies use:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install --legacy-peer-deps
 ```
+
+#### Run
+
+```bash
+npm run start
+```
+
+## 🛠️ Tech Stack
+- Vite
+- React
+- Typescript
+- React Router
+- CSS Modules
+- Matter.js
+- I18n
+- Lucide icons
+
+## 🙌 Contributing
+Contributions are welcome! Feel free to fork this project and submit a pull request.
+To contribute:
+
+- Fork the repo
+- Create your branch: git checkout -b feature/your-feature-name
+- ommit your changes: git commit -m "Add your feature"
+- Push to the branch: git push origin feature/your-feature-name
+- Open a pull request
+
+## 📜 License
+This project is open-source and available under the MIT License. See `LICENSE.txt` for more information. 
+
+## 📫 Contact
+Have questions, feedback, or want to contribute? Feel free to reach out!
+- 🧑‍💻 Author: [StepanBlaha](https://stepanblaha.com)
+- ✉️ Email: [stepa15.b@gmail.com](mailto:stepa15.b@gmail.com)
+- 🐙 GitHub: [StepanBlaha](https://github.com/StepanBlaha)
+- 🌐 Project Link: [https://github.com/StepanBlaha/SBPool](https://github.com/StepanBlaha/SBPool)
+
+
+
+
+
+
+
+
+
+
+
+
