@@ -658,7 +658,7 @@ export default function PoolTable({setScoredBalls, setStrokes, onBallsStopped}: 
           }
           // If its cueball respawn it
           if (ball.label === 'cueBall') {
-              setTimeout(() => respawnCueBall(), 30)
+              setTimeout(() => {respawnCueBall(); document.dispatchEvent(new Event('CUE_POCKETED'))}, 30)
           }
           // Remove the ball and remove it from poolBalls array
           Composite.remove(engine.world, ball);

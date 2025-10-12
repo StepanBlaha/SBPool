@@ -106,7 +106,9 @@ const Home = () => {
             return "stripped";
         }
     }
-
+    useEffect(()=>{
+        console.log(scoredBalls)
+    },[scoredBalls])
 
     const handleBallsStopped = useCallback(() => {
         if (!multiplayer) return;
@@ -161,32 +163,38 @@ const Home = () => {
                 console.log(nextPlayer)
             }
         }
-
-
-
         // Create new snapshot
         prevScoredCountRef.current = scoredBalls.length;
     }, [multiplayer, currPlayer, scoredBalls, firstCol, secondCol, balls]);
+
+
     // Reset the game -  potrebuje resetovat i game screen 
     const restartGame = () => {
-
         setScoredBalls([]);
-
         setStrokes(0);
         setFirstStrokes(0);
         setSecondStrokes(0);
-
         setFirstCol(undefined);
         setSecondCol(undefined);
-
         setCurrPlayer(1);
         setIsWaiting(false);
         prevScoredCountRef.current = 0;
         setHasWon(undefined);
-
         document.dispatchEvent(new Event('POOL_RESET'))
     }
-
+    useEffect(()=>{
+        restartGame();
+        if(!multiplayer)return;
+        document.addEventListener('CUE_POCKETED', ()=>{
+                setCurrPlayer(p => (p === 1 ? 2 : 1))
+            }
+        )
+        return () => {
+            document.removeEventListener('CUE_POCKETED', ()=>{
+                setCurrPlayer(p => (p === 1 ? 2 : 1))
+            });
+        }
+    },[multiplayer])
 
 
 
