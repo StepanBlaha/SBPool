@@ -43,6 +43,8 @@ const VPAD_Y = 16;
 
 // Physics tuning (dimensionless)
 const MAX_PULL = 140;
+const MIN_PULL_RATIO = 0.05; // 8% of MAX_PULL feels reasonable
+const MIN_PULL = MAX_PULL * MIN_PULL_RATIO;
 const MIN_SHOT_SPEED = 0.05;
 const FRICTION_AIR = 0.012;
 const BALL_RESTITUTION = 0.96;
@@ -601,21 +603,22 @@ export default function PoolTable({setScoredBalls, setStrokes, onBallsStopped}: 
     const onMouseUp = () => {
       if (!aiming || !cueBall) return
       aiming = false; // Reset aiming
-      if (pull > 1) {
+      if (pull >= MIN_PULL) {
         // Calculate power and velocity
         const power = pull / MAX_PULL
         const shotVel = Vector.mult(aimDir, MAX_SPEED * power)
         // Set velocity to the cueball
         Body.setVelocity(cueBall, shotVel)
+        // Increment stroke
+        setStrokes((prev)=>prev+1)
       }
-      // Increment stroke
-      setStrokes((prev)=>prev+1)
       pull = 0; // Reset pull
       // Clean the power bar
       if (powerBar){
         powerBar.style.height = '0%';
       }
     }
+    //////////////////
 
     const onDown = (e: MouseEvent) => { updateMouseFromEvent(e); onMouseDown(); };
     const onMove = (e: MouseEvent) => { updateMouseFromEvent(e); onMouseMove(); };
