@@ -1,32 +1,33 @@
-# SBPool 
+# 🎱 SBPool 
 
-**SBPool** is a 8-ball pool game made in react and typescript. Play a local multiplayer and try to beat your friend or turn on singleplayer mode and try to clear the game with the fewest strokes!
+**SBPool** is a 8-ball pool game made in react and typescript👌.<br/> Play a local multiplayer and try to beat your friend or turn on singleplayer mode and try to clear the game with the fewest strokes!
 
 ---
 
 ## 🌟 Features
 
-- **Singleplayer Mode**
+- 👤 **Singleplayer Mode**
   - Play alone
   - Try to clear the table with the fewest strokes possible
     
-- **Multiplayer Mode**
+- 👥 **Multiplayer Mode**
+  - Switch to multiplayer with a simple button click
   - Play with your friend in local pvp
   - Online multiplayer is on the way!!
     
-- **Game Reset**
+- 🔄 **Game Reset**
   - Dont like the way your game is going? Simply press the reset button and start over
     
-- **Themes**
+- 📚 **Themes**
   - Easily switch between light and dark mode to play the way that suits you
     
-- **Localization**
+- 💬 **Localization**
   - Switch between languages easily with a click of a button  
   - SBPool currently supports 2 languages:
     - Czech
     - English
       
-- **Custom Art**
+- 🎨 **Custom Art**
   - All of the assets are custom made with love
 
 ---
@@ -68,6 +69,9 @@ npm run start
 - Matter.js
 - I18n
 - Lucide icons
+
+## ☁️ Deployment
+- Deployed at: [SBPool](https://sbpool.stepanblaha.com/)
 
 ## 🙌 Contributing
 Contributions are welcome! Feel free to fork this project and submit a pull request.
