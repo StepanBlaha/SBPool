@@ -50,6 +50,7 @@ const FRICTION_AIR = 0.012;
 const BALL_RESTITUTION = 0.96;
 const BALL_FRICTION = 0.01;
 const CUSHION_RESTITUTION = 0.9;
+const PULL_SENS = 0.5; // lower = less sensitive (0.5 means you need 2x drag)
 
 // Colors
 const felt = 'var(--accent-color)';
@@ -594,7 +595,7 @@ export default function PoolTable({setScoredBalls, setStrokes, onBallsStopped}: 
       // dot < 0  - mouse is *behind* the cue ball (opposite aimDir) - pulling back
       const dot = Vector.dot(off, aimDir)
       // Calculate pull strength - how far in the opposite of aim direction is mouse
-      pull = Math.max(0, Math.min(MAX_PULL, -dot))
+      pull = Math.max(0, Math.min(MAX_PULL, (-dot) * PULL_SENS));
       // Update powerbar ui
       if (powerBar){
         powerBar.style.height = ((pull / MAX_PULL) * 100).toFixed(1) + '%';
