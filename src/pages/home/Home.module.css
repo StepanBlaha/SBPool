@@ -223,6 +223,7 @@
 .BallCounter{
     min-height: fit-content;
     height: fit-content;
+    min-height: 75px;
     box-sizing: border-box;
     display: flex;
     gap: 10px;

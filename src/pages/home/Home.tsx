@@ -30,7 +30,6 @@ import { Helmet } from "react-helmet-async";
 
 
 
-type ballType = "full" | "water"
 type ballList = {
     full: number[];
     stripped: number[];
@@ -184,6 +183,8 @@ const Home = () => {
         setIsWaiting(false);
         prevScoredCountRef.current = 0;
         setHasWon(undefined);
+
+        document.dispatchEvent(new Event('POOL_RESET'))
     }
 
 

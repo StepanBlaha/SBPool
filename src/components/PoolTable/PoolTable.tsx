@@ -88,7 +88,8 @@ interface PoolTableProps {
   // Played strokes number setter
   setStrokes: React.Dispatch<React.SetStateAction<number>>
   // All balls stopped
-  onBallsStopped?: () => void; // ← optional
+  onBallsStopped?: () => void;
+  // Call reset
 }
 /**
  * Pooltable component
@@ -167,15 +168,15 @@ export default function PoolTable({setScoredBalls, setStrokes, onBallsStopped}: 
     };
   }
   // Track when all balls stop moving 
-    const prevMovingRef = useRef<boolean>(true);            // last "moving" state
-    const stableStopSinceRef = useRef<number | null>(null); // timestamp of first stop detection
-    const stopDebounceMs = 200;                              // ignore tiny jitters
-    // Keep a reference to the callback so it’s stable inside listeners
-    const onBallsStoppedRef = useRef(onBallsStopped);
+  const prevMovingRef = useRef<boolean>(true);            // last "moving" state
+  const stableStopSinceRef = useRef<number | null>(null); // timestamp of first stop detection
+  const stopDebounceMs = 200;                              // ignore tiny jitters
+  // Keep a reference to the callback so it’s stable inside listeners
+  const onBallsStoppedRef = useRef(onBallsStopped);
 
-    useEffect(() => {
-  onBallsStoppedRef.current = onBallsStopped;
-}, [onBallsStopped]);
+  useEffect(() => {
+    onBallsStoppedRef.current = onBallsStopped;
+  }, [onBallsStopped]);
 
   useEffect(() => {
     // Return on no table
@@ -425,6 +426,8 @@ export default function PoolTable({setScoredBalls, setStrokes, onBallsStopped}: 
       Composite.add(engine.world, cueBall)
     }
 
+
+//////////////////////////
     // Reset ball rack
     const resetRack = () => {
       // Remove all the balls
