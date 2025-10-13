@@ -66,7 +66,7 @@ const Home = () => {
     const [secondCol, setSecondCol] = useState<"stripped"|"full">();
     const [firstStrokes, setFirstStrokes] = useState<number>(0);
     const [secondStrokes, setSecondStrokes] = useState<number>(0);
-
+    const cuePocketedRef = useRef(false);
 
     const [strokes, setStrokes] = useState<number>(0);
 
@@ -110,63 +110,73 @@ const Home = () => {
         console.log(scoredBalls)
     },[scoredBalls])
 
+    // Handle all balls stopped
     const handleBallsStopped = useCallback(() => {
         if (!multiplayer) return;
 
-        // Balls scored in THIS shot only
-        const pottedThisShot = scoredBalls.slice(prevScoredCountRef.current);
-        // Current players color
-        const currentColor = currPlayer === 1 ? firstCol : secondCol;
-        // Keep turn flag
-        let keepTurn = false;
-        // First scored ball
-        if (!currentColor) {
-            if (pottedThisShot.length > 0) {
-                const firstColHit = findBallsColor(pottedThisShot[0]);
-                const other = firstColHit === "full" ? "stripped" : "full";
-                // Set player colors
-                if (currPlayer === 1) {
-                    setFirstCol(firstColHit);
-                    setSecondCol(other);
-                } else {
-                    setSecondCol(firstColHit);
-                    setFirstCol(other);
-                }
-                // Shooter keeps the table
-                keepTurn = true; 
-            }
-        } else {
-            // Keep turn if they potted one of their own
-            keepTurn = pottedThisShot.some(id => balls[currentColor].includes(id));
-        }
+        // Only balls potted in THIS shot, excluding the cue (0)
+        const pottedThisShot = scoredBalls
+            .slice(prevScoredCountRef.current)
+            .filter(id => id !== 0);
+        console.log(pottedThisShot)
 
-        // Show popup and swtch player only if they havent scored their own ball
-        if(!keepTurn){
+        // Set player colors on first scored
+        const currentColor = currPlayer === 1 ? firstCol : secondCol;
+        // Keep turn
+        let keepTurn = false;
+        let shouldSwitch = false;
+
+        if (cuePocketedRef.current) {
+            // Cue scratch → foul → switch AFTER this handler (once)
+            shouldSwitch = true;
+        } else {
+            // Normal logic
+            if (!currentColor) {
+                // Run only if something ws potted
+                if (pottedThisShot.length > 0) {
+                    // Get first hit color
+                    const firstColHit = findBallsColor(pottedThisShot[0]);
+                    const other = firstColHit === "full" ? "stripped" : "full";
+                    if (currPlayer === 1) {
+                        setFirstCol(firstColHit);
+                        setSecondCol(other);
+                    } else {
+                        setSecondCol(firstColHit);
+                        setFirstCol(other);
+                    }
+                    keepTurn = true;
+                }
+            } else {
+                // Find if user potted a ball of their color
+                keepTurn = pottedThisShot.some(id => balls[currentColor].includes(id));
+            }
+            shouldSwitch = !keepTurn;
+        }
+        // Switch player if needed
+        if (shouldSwitch) {
             setIsWaiting(true);
             setTimeout(() => setIsWaiting(false), 1000);
             setCurrPlayer(p => (p === 1 ? 2 : 1));
         }
-        console.log(pottedThisShot)
-        // Handle win / lose state
-        if(pottedThisShot.includes(8)){
-            
-            const scoredNumber = scoredBalls.filter(ball=>currentColor !== undefined && balls[currentColor].includes(ball)).length
+
+        // 8-ball win/lose check uses only object balls potted this shot
+        if (pottedThisShot.includes(8)) {
+            const scoredNumber = scoredBalls.filter(
+            ball => currentColor !== undefined && balls[currentColor].includes(ball)
+            ).length;
             const nextPlayer = currPlayer === 1 ? 2 : 1;
-            console.log(8)
-            console.log(currentColor)
-            console.log(scoredNumber)
-            if(scoredNumber >=7){
-                setHasWon(currPlayer)
-                console.log(currPlayer)
-            }else{
-                setHasWon(nextPlayer)
-                console.log(nextPlayer)
+
+            if (scoredNumber >= 7) {
+                setHasWon(currPlayer);
+            } else {
+                setHasWon(nextPlayer);
             }
         }
-        // Create new snapshot
-        prevScoredCountRef.current = scoredBalls.length;
-    }, [multiplayer, currPlayer, scoredBalls, firstCol, secondCol, balls]);
 
+        // snapshot and clear cue flag for next shot
+        prevScoredCountRef.current = scoredBalls.length;
+        cuePocketedRef.current = false;
+    }, [multiplayer, currPlayer, scoredBalls, firstCol, secondCol, balls]);
 
     // Reset the game -  potrebuje resetovat i game screen 
     const restartGame = () => {
@@ -180,21 +190,22 @@ const Home = () => {
         setIsWaiting(false);
         prevScoredCountRef.current = 0;
         setHasWon(undefined);
+        cuePocketedRef.current = false;
         document.dispatchEvent(new Event('POOL_RESET'))
     }
-    useEffect(()=>{
+    const onCuePocketed = useCallback(() => {
+        cuePocketedRef.current = true;
+    }, []);
+
+    useEffect(() => {
         restartGame();
-        if(!multiplayer)return;
-        document.addEventListener('CUE_POCKETED', ()=>{
-                setCurrPlayer(p => (p === 1 ? 2 : 1))
-            }
-        )
+        if (!multiplayer) return;
+
+        document.addEventListener('CUE_POCKETED', onCuePocketed);
         return () => {
-            document.removeEventListener('CUE_POCKETED', ()=>{
-                setCurrPlayer(p => (p === 1 ? 2 : 1))
-            });
-        }
-    },[multiplayer])
+            document.removeEventListener('CUE_POCKETED', onCuePocketed);
+        };
+    }, [multiplayer, onCuePocketed]);
 
 
 
@@ -211,7 +222,7 @@ const Home = () => {
                 <Navbar/>
                 
                 <div className={styles.Content}>
-
+                    
                     {isWaiting && (
                         <div className={styles.Overlay}>
                             <div className={styles.OverlayBlur}></div>
@@ -238,7 +249,11 @@ const Home = () => {
                             <button
                                 name="Reset game button"
                                 className={styles.resetBtn}
-                                onClick={() => document.dispatchEvent(new CustomEvent('POOL_RESET'))}
+                                onClick={() => {
+                                    document.dispatchEvent(new CustomEvent('POOL_RESET'));
+                                    restartGame()    
+                                }
+                                }
                             >
                                 <RotateCcw/>
                             </button>
