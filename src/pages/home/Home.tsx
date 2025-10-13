@@ -268,12 +268,13 @@ const Home = () => {
                             </div>
                             <button
                                 name="Reset game button"
-                                className={styles.resetBtn}
+                                className={`${styles.resetBtn} ${shotInProgress ? styles.MultDisabled : "" }`}
                                 onClick={() => {
                                     document.dispatchEvent(new CustomEvent('POOL_RESET'));
-                                    restartGame()    
+                                    restartGame();
+                                    }
                                 }
-                                }
+                                disabled={shotInProgress}
                             >
                                 <RotateCcw/>
                             </button>
