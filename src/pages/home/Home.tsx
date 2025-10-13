@@ -158,28 +158,35 @@ const Home = () => {
             }
             shouldSwitch = !keepTurn;
         }
+        
+        // 8-ball win/lose check uses only object balls potted this shot
+        if (pottedThisShot.includes(8)) {
+            const scoredNumber = scoredBalls.filter(
+                ball => currentColor !== undefined && balls[currentColor].includes(ball)
+            ).length;
+
+            // Find and set winner
+            const winner =
+                scoredNumber >= 7 ? currPlayer : (currPlayer === 1 ? 2 : 1);
+
+            setHasWon(winner);
+
+            // Snapshot and clear flags; do NOT switch players
+            prevScoredCountRef.current = scoredBalls.length;
+            cuePocketedRef.current = false;
+            shotInProgressRef.current = false;
+            setShotInProgress(false);
+            return;
+        }
         // Switch player if needed
-        if (shouldSwitch) {
+        if (shouldSwitch && !hasWon) {
             setIsWaiting(true);
             setTimeout(() => setIsWaiting(false), 1000);
             setCurrPlayer(p => (p === 1 ? 2 : 1));
         }
 
-        // 8-ball win/lose check uses only object balls potted this shot
-        if (pottedThisShot.includes(8)) {
-            const scoredNumber = scoredBalls.filter(
-            ball => currentColor !== undefined && balls[currentColor].includes(ball)
-            ).length;
-            const nextPlayer = currPlayer === 1 ? 2 : 1;
 
-            if (scoredNumber >= 7) {
-                setHasWon(currPlayer);
-            } else {
-                setHasWon(nextPlayer);
-            }
-        }
-
-        // snapshot and clear cue flag for next shot
+        // Snapshot and clear cue flag for next shot
         prevScoredCountRef.current = scoredBalls.length;
         cuePocketedRef.current = false;
         shotInProgressRef.current = false;
@@ -243,7 +250,7 @@ const Home = () => {
                 
                 <div className={styles.Content}>
 
-                    {isWaiting && (
+                    {!hasWon && isWaiting && (
                         <div className={styles.Overlay}>
                             <div className={styles.OverlayBlur}></div>
                             <p className={styles.OverlayText}>{t("hud.player")} {currPlayer}</p>
@@ -253,7 +260,7 @@ const Home = () => {
                         <div className={styles.Overlay}>
                             <div className={styles.OverlayBlur}></div>
                             <div className={styles.OverlayContent}>
-                                <p className={styles.OverlayText}>{t("hud.player")} {currPlayer} {t("hud.win")}</p>
+                                <p className={styles.OverlayText}>{t("hud.player")} {hasWon} {t("hud.win")}</p>
                                 <div className={styles.OverlayButton} onClick={restartGame}>
                                     <p>{t("hud.reset")}</p>
                                 </div>
@@ -282,11 +289,11 @@ const Home = () => {
                                 className={`${styles.toggle} ${multiplayer ? styles.active : ""} ${shotInProgress ? styles.MultDisabled : "" }`}
                                 ref={ref}
                                 onClick={() => {
-                                    if (shotInProgress) return;          // ⛔ ignore during shot
+                                    if (shotInProgress) return;
                                     setMultiplayer(!multiplayer);
                                 }}
                                 aria-disabled={shotInProgress}
-                                aria-checked={multiplayer}                // REQUIRED for role="switch"
+                                aria-checked={multiplayer}
                                 aria-label={multiplayer ? 'Switch to single player mode' : 'Switch to multi player mode'} // accessible name
                                 tabIndex={0}           
                                 role="switch"
