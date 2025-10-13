@@ -67,7 +67,8 @@ const Home = () => {
     const [firstStrokes, setFirstStrokes] = useState<number>(0);
     const [secondStrokes, setSecondStrokes] = useState<number>(0);
     const cuePocketedRef = useRef(false);
-
+    const shotInProgressRef = useRef(false);
+    const [shotInProgress, setShotInProgress] = useState(false);
     const [strokes, setStrokes] = useState<number>(0);
 
     const [multiplayer, setMultiplayer] = useState<boolean>(false);
@@ -112,7 +113,12 @@ const Home = () => {
 
     // Handle all balls stopped
     const handleBallsStopped = useCallback(() => {
-        if (!multiplayer) return;
+        
+        if (!multiplayer) {
+            shotInProgressRef.current = false;
+            setShotInProgress(false); 
+            return
+        }
 
         // Only balls potted in THIS shot, excluding the cue (0)
         const pottedThisShot = scoredBalls
@@ -176,6 +182,8 @@ const Home = () => {
         // snapshot and clear cue flag for next shot
         prevScoredCountRef.current = scoredBalls.length;
         cuePocketedRef.current = false;
+        shotInProgressRef.current = false;
+        setShotInProgress(false);  
     }, [multiplayer, currPlayer, scoredBalls, firstCol, secondCol, balls]);
 
     // Reset the game -  potrebuje resetovat i game screen 
@@ -191,6 +199,8 @@ const Home = () => {
         prevScoredCountRef.current = 0;
         setHasWon(undefined);
         cuePocketedRef.current = false;
+        shotInProgressRef.current = false;
+        setShotInProgress(false); 
         document.dispatchEvent(new Event('POOL_RESET'))
     }
     const onCuePocketed = useCallback(() => {
@@ -198,7 +208,6 @@ const Home = () => {
     }, []);
 
     useEffect(() => {
-        restartGame();
         if (!multiplayer) return;
 
         document.addEventListener('CUE_POCKETED', onCuePocketed);
@@ -207,6 +216,17 @@ const Home = () => {
         };
     }, [multiplayer, onCuePocketed]);
 
+    useEffect(() => {
+        restartGame();
+    },[multiplayer])
+
+    // Shot active flag
+    useEffect(() => {
+        if (strokes > 0) {
+            shotInProgressRef.current = true;
+            setShotInProgress(true);
+        }
+    }, [strokes]);
 
 
     return (
@@ -222,7 +242,7 @@ const Home = () => {
                 <Navbar/>
                 
                 <div className={styles.Content}>
-                    
+
                     {isWaiting && (
                         <div className={styles.Overlay}>
                             <div className={styles.OverlayBlur}></div>
@@ -258,9 +278,13 @@ const Home = () => {
                                 <RotateCcw/>
                             </button>
                             <div
-                                className={`${styles.toggle} ${multiplayer ? styles.active : ""}`}
+                                className={`${styles.toggle} ${multiplayer ? styles.active : ""} ${shotInProgress ? styles.MultDisabled : "" }`}
                                 ref={ref}
-                                onClick={()=>setMultiplayer(!multiplayer)}
+                                onClick={() => {
+                                    if (shotInProgress) return;          // ⛔ ignore during shot
+                                    setMultiplayer(!multiplayer);
+                                }}
+                                aria-disabled={shotInProgress}
                                 aria-checked={multiplayer}                // REQUIRED for role="switch"
                                 aria-label={multiplayer ? 'Switch to single player mode' : 'Switch to multi player mode'} // accessible name
                                 tabIndex={0}           

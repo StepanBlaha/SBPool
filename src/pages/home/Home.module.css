@@ -497,3 +497,6 @@ max-height: 34px;
 .OverlayButton:active {
     transform: translateY(1px);
 }
+.MultDisabled{
+    cursor: no-drop;
+}
