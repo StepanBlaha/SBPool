@@ -296,8 +296,8 @@ const Home = () => {
                             <>
                             <div className={styles.StrokeDataWrap}>
                                 <div className={styles.StrokeData}>
-                                    <div className={styles.StrokeCount}>
-                                        <p>{t("hud.player")}: <span>1</span></p>
+                                    <div className={`${styles.StrokeCount}`}>
+                                        <p>{t("hud.player")}: <span className={`${currPlayer === 1 ? styles.ActiveHud : ""}`}>1</span></p>
                                         <p>{t("hud.color")}: <span>{firstCol}</span></p>
                                         <p>{t("hud.strokes")}: <span>{firstStrokes}</span></p>
                                         <p>{t("hud.scored")}: <span>{scoredBalls.filter(ball => firstCol && balls[firstCol].includes(ball)).length}/7</span></p>
@@ -316,7 +316,7 @@ const Home = () => {
                                 </div>
                                 <div className={styles.StrokeData}>
                                     <div className={styles.StrokeCount}>
-                                        <p>{t("hud.player")}: <span>2</span></p>
+                                        <p>{t("hud.player")}: <span className={`${currPlayer === 2 ? styles.ActiveHud : ""}`}>2</span></p>
                                         <p>{t("hud.color")}: <span>{secondCol}</span></p>
                                         <p>{t("hud.strokes")}: <span>{secondStrokes}</span></p>
                                         <p>{t("hud.scored")}: <span>{scoredBalls.filter(ball => secondCol && balls[secondCol].includes(ball)).length}/7</span></p>

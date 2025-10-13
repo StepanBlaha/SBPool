@@ -500,3 +500,6 @@ max-height: 34px;
 .MultDisabled{
     cursor: no-drop;
 }
+.ActiveHud{
+    color: var(--accent-color);
+}
