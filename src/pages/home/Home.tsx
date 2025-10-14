@@ -315,7 +315,7 @@ const Home = () => {
                                         {[...scoredBalls].sort((a,b)=>a-b).map(ball=>{
                                             if (firstCol !== undefined && balls[firstCol].includes(ball)) {
                                                 return(
-                                                <div className={styles.Ball} style={{backgroundImage: `url(${SPRITES[ball]})`}}></div>
+                                                <div key={`${ball}-1`} className={styles.Ball} style={{backgroundImage: `url(${SPRITES[ball]})`}}></div>
                                                 )
                                             }
                                         })}
@@ -334,7 +334,7 @@ const Home = () => {
                                         {[...scoredBalls].sort((a,b)=>a-b).map(ball=>{
                                             if (secondCol !== undefined && balls[secondCol].includes(ball)) {
                                                 return(
-                                                <div className={styles.Ball} style={{backgroundImage: `url(${SPRITES[ball]})`}}></div>
+                                                <div key={`${ball}-2`} className={styles.Ball} style={{backgroundImage: `url(${SPRITES[ball]})`}}></div>
                                                 )
                                             }
                                         })}
@@ -353,7 +353,7 @@ const Home = () => {
 
                                 <div className={styles.BallCounter}>
                                     {[...scoredBalls].sort((a,b)=>a-b).map(ball=>(
-                                        <div className={styles.Ball} style={{backgroundImage: `url(${SPRITES[ball]})`}}></div>
+                                        <div key={`${ball}-solo`} className={styles.Ball} style={{backgroundImage: `url(${SPRITES[ball]})`}}></div>
                                     ))}
                                 </div>
 
