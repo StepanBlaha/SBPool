@@ -21,7 +21,7 @@ import styles from "./PoolTable.module.css"
 
 
 
-
+// !AI used to explain pool physics!
 
 
 
@@ -429,8 +429,6 @@ export default function PoolTable({setScoredBalls, setStrokes, onBallsStopped}: 
       Composite.add(engine.world, cueBall)
     }
 
-
-//////////////////////////
     // Reset ball rack
     const resetRack = () => {
       // Remove all the balls
